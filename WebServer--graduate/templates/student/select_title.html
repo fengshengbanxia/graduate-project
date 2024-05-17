@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>毕业设计管理系统</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+    {% include 'public/script.html' %}
+
+    {% include 'public/style.html' %}
+
+    <style>
+        .widget-body.widget-body-lg.am-fr
+        .am-scrollable-horizontal {
+            height:250px!;
+            min-height:250px!important;
+        }
+        .am-scrollable-horizontal{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .widget-tail{
+            border-top: 1px solid #eef1f5;
+            height:30px;
+            margin-top:300px;
+        }
+        .layui-layer.layui-layer-page .layui-form-label{
+            width:100px!important;
+        }
+        .layui-layer.layui-layer-page .layui-input-block{
+            width:400px!important;
+        }
+    </style>
+    <script>
+        // 上传任务书或者指导书
+        layui.use('upload', function(){
+          var upload = layui.upload;
+
+          //执行实例（开题报告）
+          var uploadInst1 = upload.render({
+            elem: '#upload1' //绑定元素
+            ,accept: 'file' //允许上传的文件类型
+            ,exts: 'docx|doc' //允许上传的文件名后缀
+            ,url: '{% url 'student_doUploadTitle' %}'
+            ,done: function(res){
+               console.log("1上传的结果是",res);
+               if(res.code == 200){
+                    $("#title_download").html( `已经上传的开题报告： <a href="${res.data}" title="点击下载查看" download> 点击下载开题报告 </a>` )
+                    layer.msg("上传开题报告成功！");
+               }else{
+                    layer.msg("上传开题报告出现异常！");
+               }
+            }
+            ,error: function(e){
+              console.log(e);
+              layer.msg("上传开题报告出现异常！");
+            }
+          });
+          //执行实例（外文翻译）
+          var uploadInst2 = upload.render({
+            elem: '#upload2' //绑定元素
+            ,accept: 'file' //允许上传的文件类型
+            ,exts: 'docx|doc' //允许上传的文件名后缀
+            ,url: '{% url 'student_doUploadEnglish' %}'
+            ,done: function(res){
+               console.log("2上传的结果是",res);
+               if(res.code == 200){
+                    $("#english_download").html( `已经上传的外文翻译： <a href="${res.data}" title="点击下载查看" download> 点击下载外文翻译 </a>` )
+                    layer.msg("上传外文翻译成功！");
+               }else{
+                    layer.msg("上传外文翻译出现异常！");
+               }
+            }
+            ,error: function(e){
+              console.log(e);
+              layer.msg("上传外文翻译出现异常！");
+            }
+          });
+          //执行实例（申请表）
+          var uploadInst3 = upload.render({
+            elem: '#upload3' //绑定元素
+            ,accept: 'file' //允许上传的文件类型
+            ,exts: 'docx|doc' //允许上传的文件名后缀
+            ,url: '{% url 'student_doUploadApply' %}'
+            ,done: function(res){
+               console.log("1上传的结果是",res);
+               if(res.code == 200){
+                    $("#apply_download").html( `已经上传的申请表： <a href="${res.data}" title="点击下载查看" download> 点击下载申请表 </a>` )
+                    layer.msg("上传申请表成功！");
+               }else{
+                    layer.msg("上传申请表出现异常！");
+               }
+            }
+            ,error: function(e){
+              console.log(e);
+              layer.msg("上传申请表出现异常！");
+            }
+          });
+          //执行实例（毕业论文）
+          var uploadInst4 = upload.render({
+            elem: '#upload4' //绑定元素
+            ,accept: 'file' //允许上传的文件类型
+            ,exts: 'docx|doc' //允许上传的文件名后缀
+            ,url: '{% url 'student_doUploadArticle' %}'
+            ,done: function(res){
+               console.log("2上传的结果是",res);
+               if(res.code == 200){
+                    $("#article_download").html( `已经上传的毕业论文： <a href="${res.data}" title="点击下载查看" download> 点击下载毕业论文 </a>` )
+                    layer.msg("上传毕业论文成功！");
+               }else{
+                    layer.msg("上传毕业论文出现异常！");
+               }
+            }
+            ,error: function(e){
+              console.log(e);
+              layer.msg("上传毕业论文出现异常！");
+            }
+          });
+        });
+    </script>
+</head>
+
+<body data-type="widgets" class="theme-white">
+
+    <div class="row-content am-cf">
+
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 查看选题 <small>报告</small></div>
+                        <p class="page-header-description">请毕业学生上传开题报告，外文翻译，申请表，毕业论文！</p>
+                    </div>
+<!--                    <div class="am-u-lg-3 tpl-index-settings-button">-->
+<!--                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>-->
+<!--                    </div>-->
+                </div>
+
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading">
+                            <span id="student_name">{{data.student_name}} </span>
+                            <small id="name">{{data.name}}</small>
+                        </div>
+                        <p class="page-header-description"  id="brief"> 介绍： {{data.brief}}</p>
+                        <p class="page-header-description"  id="task">
+                            任务书下载：
+                            {% if data.task_docx %}
+                                 <a href="{{data.task_docx }}" title="点击下载查看" download> 点击下载任务书 </a>
+                            {% else %}
+                                 <a href="javascript:;" title="请先上传任务书" > 暂无 </a>
+                            {% endif %}
+                        </p>
+                        <p class="page-header-description"  id="guide">
+                            指导书下载：
+                            {% if data.guide_docx %}
+                                 <a href="{{data.guide_docx }}" title="点击下载查看" download> 点击下载指导书 </a>
+                            {% else %}
+                                 <a href="javascript:;" title="请先上传指导书" > 暂无 </a>
+                            {% endif %}
+                        </p>
+                        <p class="page-header-description"  id="guide_teacher">
+                            指导书教师：
+                            {% if data.teacher_name %}
+                                {{data.teacher_name}}
+                            {% else %}
+                                暂无
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+
+                <div class="row" style="height:420px">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">上传开题报告</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body  widget-body-lg am-fr">
+                                <div class="am-scrollable-horizontal ">
+                                    <div class="layui-upload-drag" id="upload1">
+                                      <i class="layui-icon"></i>
+                                      <p>点击上传，或拖拽word文件到此处</p>
+                                      <div class="layui-hide" id="uploadDemoView1">
+                                        <hr>
+                                        <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-tail am-cf">
+                                <div class="widget-title am-fl" id="title_download">
+                                    已经上传的开题报告：
+                                    {% if data.title_docx %}
+                                         <a href="{{data.title_docx }}" title="点击下载查看" download> 点击下载开题报告</a>
+                                    {% else %}
+                                         <a href="javascript:;" title="请先上传任务书" > 暂无 </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">上传外文翻译</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body  widget-body-lg am-fr">
+                                <div class="am-scrollable-horizontal ">
+                                    <div class="layui-upload-drag" id="upload2">
+                                      <i class="layui-icon"></i>
+                                      <p>点击上传，或拖拽word文件到此处</p>
+                                      <div class="layui-hide" id="uploadDemoView2">
+                                        <hr>
+                                        <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-tail am-cf">
+                                <div class="widget-title am-fl"  id="english_download">
+                                    已经上传的外文翻译：
+                                    {% if data.english_docx %}
+                                         <a href="{{data.english_docx }}" title="点击下载查看" download> 点击下载外文翻译 </a>
+                                    {% else %}
+                                         <a href="javascript:;" title="请先上传指导书" > 暂无 </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row" style="height:420px">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">上传申请表</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body  widget-body-lg am-fr">
+                                <div class="am-scrollable-horizontal ">
+                                    <div class="layui-upload-drag" id="upload3">
+                                      <i class="layui-icon"></i>
+                                      <p>点击上传，或拖拽word文件到此处</p>
+                                      <div class="layui-hide" id="uploadDemoView3">
+                                        <hr>
+                                        <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-tail am-cf">
+                                <div class="widget-title am-fl" id="apply_download">
+                                    已经上传的申请表：
+                                    {% if data.apply_docx %}
+                                         <a href="{{data.apply_docx }}" title="点击下载查看" download> 点击下载申请表 </a>
+                                    {% else %}
+                                         <a href="javascript:;" title="请先上传任务书" > 暂无 </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">上传毕业论文</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body  widget-body-lg am-fr">
+                                <div class="am-scrollable-horizontal ">
+                                    <div class="layui-upload-drag" id="upload4">
+                                      <i class="layui-icon"></i>
+                                      <p>点击上传，或拖拽word文件到此处</p>
+                                      <div class="layui-hide" id="uploadDemoView4">
+                                        <hr>
+                                        <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-tail am-cf">
+                                <div class="widget-title am-fl"  id="article_download">
+                                    已经上传的毕业论文：
+                                    {% if data.article_docx %}
+                                         <a href="{{data.article_docx }}" title="点击下载查看" download> 点击下载毕业论文 </a>
+                                    {% else %}
+                                         <a href="javascript:;" title="请先上传指导书" > 暂无 </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>

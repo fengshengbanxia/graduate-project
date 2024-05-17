@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>毕业设计管理系统</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+    {% include 'public/script.html' %}
+
+    {% include 'public/style.html' %}
+
+    <style>
+        .iframe-scrollable {
+            overflow: auto;
+        }
+
+        .a-iframe{
+            width: 100%;
+            height: calc(100vh - 56px);
+        }
+        body{
+            overflow: hidden;
+        }
+        .left-sidebar{
+            top:56px;
+            height:calc(100vh - 56px);
+            overflow-y: auto;
+            overflow-x: hidden ;
+            padding-top:0!important;
+        }
+        @media screen and (max-width: 1024px){
+            .left-sidebar {
+                top:113px;
+                height:calc(100vh - 113px);
+            }
+        }
+    </style>
+</head>
+
+<body data-type="index"  class="theme-white">
+    <div class="am-g tpl-g">
+        <!-- 头部 -->
+        {% include 'public/header.html' %}
+
+        <!-- 风格切换 -->
+        {% include 'public/theme.html' %}
+
+        <!-- 侧边导航栏 -->
+        {% include 'public/aside.html' %}
+
+        <!-- 内容区域 -->
+        <div class="tpl-content-wrapper">
+            {% if request.session.userinfo.type == 'student'  %}
+                <iframe src="{% url 'student_index' %}" class="a-iframe iframe-no-border iframe-scrollable"></iframe>
+               <!-- <iframe src="{% url 'student_index' %}" frameborder="0" scrolling="yes" class="a-iframe"></iframe>-->
+            {% elif request.session.userinfo.type == 'teacher'  %}
+                <!--<iframe src="{% url 'teacher_index' %}" frameborder="0" scrolling="yes" class="a-iframe"></iframe>-->
+                <iframe src="{% url 'student_index' %}" class="a-iframe iframe-no-border iframe-scrollable"></iframe>
+            {% elif request.session.userinfo.type == 'admin'  %}
+                <1--<iframe src="{% url 'admin_index' %}" frameborder="0" scrolling="yes" class="a-iframe"></iframe>-->
+                <iframe src="{% url 'student_index' %}" class="a-iframe iframe-no-border iframe-scrollable"></iframe>
+            {% endif %}
+        </div>
+    </div>
+    <script src="../static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="../static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="../static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="../static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>

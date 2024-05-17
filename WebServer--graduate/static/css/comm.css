@@ -1,0 +1,27 @@
+*{
+    padding:0;
+    margin:0;
+}
+.left-sidebar{
+    background:white;
+    border-right:1px solid #f0f0f0;
+}
+.sidebar-nav-link-logo::before{
+    width:18px!important;
+    text-align:center;
+}
+.index-top{
+    margin: 18px 1px!important;
+    background: white;
+    padding: 15px;
+    border-radius: 5px;
+}
+.left-sidebar,.tpl-content-wrapper{
+    height:calc(100vh - 56px);
+}
+.tpl-content-wrapper.table-div>.row-content,
+.tpl-content-wrapper.table-div>.row-content>.row,
+.tpl-content-wrapper.table-div>.row-content>.row>div,
+.tpl-content-wrapper.table-div>.row-content>.row>div>.widget{
+    height:100%;
+}

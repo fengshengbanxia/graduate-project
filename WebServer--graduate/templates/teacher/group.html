@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>毕业设计管理系统</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+    {% include 'public/script.html' %}
+
+    {% include 'public/style.html' %}
+    <style>
+        #select-txt{
+            position:absolute;
+            margin-top:6px;
+        }
+        .index-top{
+            height:100px!important;
+        }
+    </style>
+
+    <script>
+        // 选择分组
+        function onConfirmGroup(id,group_name,count){
+            // 如果已经有分组，则不允许再选择
+            let name = $("#group_name").html()
+            name = name ? name.replace(" ","") : 'None'
+            if(name != 'None'){
+                layer.msg("已经选择分组！不允许再修改");
+                return;
+            }else if(count >= 3){
+                layer.msg("当前分组人数已满！请选择其它组");
+                return;
+            }
+
+            // 再次进行确认
+            layer.confirm('请确认当前组是否作为您选择的组号?', {icon: 3, title:'提示'}, function(index){
+              $.ajax({
+                    url:'{% url 'teacher_doConfirmGroup' %}',
+                    method:'post',
+                    data:{id,name:group_name,count,csrfmiddlewaretoken: $('input[name^=csrfmiddlewaretoken]').val()},
+                    success:function(res){
+                        if(res.code== 200){
+                            layer.msg("提交成功！");
+                            // 修改显示栏
+                            $('#group_name').html(res.new_data.group_name)
+                            $('#group_type').html(res.new_data.group_type)
+                            // 修改表格
+                              let trList = $("#table-list tr");
+                              trList.each((index,item)=>{
+                                  if($(item)[0].dataset.id == id){
+                                      console.log("已经找到当前id",id);
+                                      $(item).html( `
+                                        <td>${res.data.name}</td>
+                                        <td>${res.data.teacher_name}</td>
+                                        <td>${res.data.teacher_type}</td>
+                                        <td>${res.data.count}</td>
+                                        <td>
+                                            <div class="tpl-table-black-operation">
+                                                <a href="javascript:;" class="tpl-table-black-operation-del" onclick="onConfirmGroup('${res.data.id}','${res.data.name}','${res.data.count}')">
+                                                    <i class="am-icon-life-ring"></i> 选择
+                                                </a>
+                                            </div>
+                                        </td>
+                                      ` );
+                                  }
+                              })
+                        }else{
+                            layer.msg("提交出现异常！");
+                        }
+                    }
+                    ,error: function(e){
+                      console.log(e);
+                      layer.msg("提交出现异常！");
+                    }
+              })
+              layer.close(index);
+            },function(){});
+        }
+    </script>
+</head>
+
+<body data-type="widgets"   class="theme-white">
+
+    <div class="row-content am-cf">
+
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span>
+                            已选择分组
+                            <small id="group_name">{{data.group_name}}</small>
+                        </div>
+                        <p class="page-header-description">请所有学生仔细考虑选择分组，一旦选择就无法再修改！</p>
+                        <p class="page-header-description">
+                            当前教师的小组身份：
+                            <span id="group_type">{{data.group_type}}</span>
+                        </p>
+                    </div>
+<!--                    <div class="am-u-lg-3 tpl-index-settings-button">-->
+<!--                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>-->
+<!--                    </div>-->
+                </div>
+
+                <div class="row">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title  am-cf">分组列表</div>
+                            </div>
+                            <div class="widget-body  am-fr">
+
+                                <div class="am-u-sm-12">
+                                    {%csrf_token%}
+                                    <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
+                                        <thead>
+                                            <tr>
+                                                <th>组号</th>
+                                                <th>教师名称</th>
+                                                <th>已有职位</th>
+                                                <th>组内人数</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table-list">
+                                            {% for item in data_list %}
+                                                <tr class="gradeX" data-id="{{item.id}}">
+                                                    <td>{{item.name}}</td>
+                                                    <td>{{item.teacher_name}}</td>
+                                                    <td>{{item.teacher_type}}</td>
+                                                    <td>{{item.count}}</td>
+                                                    <td>
+                                                        <div class="tpl-table-black-operation">
+                                                            <a href="javascript:;" class="tpl-table-black-operation-del" onclick="onConfirmGroup('{{item.id}}','{{item.name}}','{{item.count}}')">
+                                                                <i class="am-icon-life-ring"></i> 选择
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            <!-- more data -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>毕业设计管理系统</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+    {% include 'public/script.html' %}
+
+    {% include 'public/style.html' %}
+
+    <style>
+        .teacher-tab .widget,
+        .teacher-tab .widget-statistic-header,
+        .teacher-tab .widget-statistic-description,
+        .teacher-tab .widget-statistic-value{
+            background:white!important;
+            color:#7e5959!important;
+            border-color:white!important;
+        }
+
+        table.dataTable thead .sorting_asc::after,
+        table.dataTable thead .sorting_desc::after,
+        table.dataTable thead .sorting::after {
+            display:none!important
+        }
+    </style>
+</head>
+
+<body data-type="index"  class="theme-white">
+    <div class="row-content am-cf">
+
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 首页 <small></small></div>
+                        <p class="page-header-description">我是管理员</p>
+                    </div>
+<!--                    <div class="am-u-lg-3 tpl-index-settings-button">-->
+<!--                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>-->
+<!--                    </div>-->
+                </div>
+
+                <div class="row  am-cf">
+                    <div class="am-u-sm-12 am-u-md-6 am-u-lg-4 teacher-tab">
+                        <div class="widget widget-primary am-cf">
+                            <div class="widget-statistic-header">
+                                本校教师总数
+                            </div>
+                            <div class="widget-statistic-body">
+                                <div class="widget-statistic-value">
+                                    {{show_data.show_count1}}
+                                </div>
+                                <div class="widget-statistic-description">
+                                    本季度比去年新增 <strong>{{show_data.show_add1}}</strong> 人
+                                </div>
+                                <span class="widget-statistic-icon am-icon-credit-card-alt"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-12 am-u-md-6 am-u-lg-4">
+                        <div class="widget widget-primary am-cf">
+                            <div class="widget-statistic-header">
+                                本校学生总数
+                            </div>
+                            <div class="widget-statistic-body">
+                                <div class="widget-statistic-value">
+                                    {{show_data.show_count2}}
+                                </div>
+                                <div class="widget-statistic-description">
+                                    本季度比去年新增 <strong>{{show_data.show_add2}}</strong> 人
+                                </div>
+                                <span class="widget-statistic-icon am-icon-credit-card-alt"></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="am-u-sm-12 am-u-md-6 am-u-lg-4">
+                        <div class="widget widget-purple am-cf">
+                            <div class="widget-statistic-header">
+                                本校课题总数
+                            </div>
+                            <div class="widget-statistic-body">
+                                <div class="widget-statistic-value">
+                                    {{show_data.show_count3}}
+                                </div>
+                                <div class="widget-statistic-description">
+                                    本季度比去年新增 <strong>{{show_data.show_add3}}</strong> 件
+                                </div>
+                                <span class="widget-statistic-icon am-icon-support"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row am-cf">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-4 widget-margin-bottom-lg ">
+                        <div class="tpl-user-card am-text-center widget-body-lg">
+                            <div class="tpl-user-card-title">
+                                {{request.session.userinfo.name}}
+                            </div>
+                            <div class="achievement-subheading">
+                                当前管理员ID：{{request.session.userinfo.number}}
+                            </div>
+                            <img class="achievement-image" src="/static/lib/admin-assets/img/user01.png" alt="">
+                        </div>
+                    </div>
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-8 widget-margin-bottom-lg">
+
+                        <div class="widget am-cf widget-body-lg">
+
+                            <div class="widget-body  am-fr">
+                                <div class="am-scrollable-horizontal ">
+                                    <table width="100%" class="am-table am-table-compact am-text-nowrap tpl-table-black " id="example-r">
+                                        <thead>
+                                            <tr>
+                                                <th>信息类型</th>
+                                                <th>人员名称</th>
+                                                <th>人员编号</th>
+                                                <th>注册时间</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+
+                                            {% for item in data_list %}
+                                            <tr class="gradeX">
+                                                <td>{{item.type}}</td>
+                                                <td>{{item.name}}</td>
+                                                <td>{{item.number}}</td>
+                                                <td>{{item.register_time | date:'Y-m-d'}}</td>
+                                            </tr>
+                                            {% endfor %}
+
+
+                                            <!-- more data -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+    </div>
+
+    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>毕业设计管理系统</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+    {% include 'public/script.html' %}
+
+    {% include 'public/style.html' %}
+
+    <style>
+        .am-scrollable-horizontal{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .widget-tail{
+            display: flex;
+            flex-direction: column;
+            height:60px;
+            margin-top:10px;
+        }
+        .layui-layer.layui-layer-page .layui-form-label{
+            width:100px!important;
+        }
+        .layui-layer.layui-layer-page .layui-input-block{
+            width:400px!important;
+        }
+        textarea{
+            resize:none!important;
+        }
+        /*隐藏方法*/
+        #layui-layer-shade1,#layui-layer1{
+            display:none;
+        }
+    </style>
+    <script>
+    </script>
+</head>
+
+<body data-type="widgets" class="theme-white">
+
+    <div class="row-content am-cf">
+
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 开题答辩 <small>查看</small></div>
+                        <p class="page-header-description">小组任务教师会参考学生上传的毕业论文，再给出成绩！</p>
+                    </div>
+<!--                    <div class="am-u-lg-3 tpl-index-settings-button">-->
+<!--                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>-->
+<!--                    </div>-->
+                </div>
+
+                <div class="row" style="height:150px">
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">学生毕业论文</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-tail am-cf">
+                                {% for i,item in graduate_data %}
+                                <div class="widget-title am-fl"  id="article_download{{i | add:1}}">
+                                    {{item.student_name}}毕业论文：
+                                    {% if item.article_docx %}
+                                         <a href="{{item.article_docx }}" title="点击下载查看" download> 点击下载毕业论文 </a>
+                                    {% else %}
+                                         <a href="javascript:;" title="请先上传毕业论文" > 暂无 </a>
+                                    {% endif %}
+                                </div> 
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {%csrf_token%}
+                <input type="hidden" name="student_id" id="student_id" />
+                <input type="hidden" name="student_index" id="student_index" />
+
+
+                {% for i,item in score_data %}
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading">
+                            <span id="student_name{{i | add:1 }}">{{item.student_name}} </span>
+                            <small id="name{{i | add:1 }}">{{item.name}}</small>
+                        </div>
+                        <p class="page-header-description"  id="brief{{i | add:1 }}"> 介绍： {{item.brief}}</p>
+                        <p class="page-header-description"  id="first_score{{i | add:1 }}"> 答辩成绩： {{item.first_score}}</p>
+                        <p class="page-header-description"  id="first_remark{{i | add:1 }}"> 答辩评语： {{item.first_remark}}</p>
+                        <p class="page-header-description"  id="english_score{{i | add:1 }}"> 外文翻译成绩： {{item.english_score}}</p>
+                        <p class="page-header-description"  id="english_remark{{i | add:1 }}"> 外文翻译评语： {{item.english_remark}}</p>
+                    </div>
+                </div>
+                {% endfor %}
+
+                </div>
+
+    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>

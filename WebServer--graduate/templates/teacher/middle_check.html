@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>毕业设计管理系统</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+    {% include 'public/script.html' %}
+
+    {% include 'public/style.html' %}
+
+    <style>
+        .am-scrollable-horizontal{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .widget-tail{
+            display: flex;
+            flex-direction: column;
+            height:60px;
+            margin-top:10px;
+        }
+        .layui-layer.layui-layer-page .layui-form-label{
+            width:100px!important;
+        }
+        .layui-layer.layui-layer-page .layui-input-block{
+            width:400px!important;
+        }
+        textarea{
+            resize:none!important;
+        }
+        /*隐藏方法*/
+        #layui-layer-shade1,#layui-layer1{
+            display:none;
+        }
+    </style>
+    <script>
+       /*加载弹层*/
+        layer.open({
+          type: 1,
+          area: ['620px', '280px'], //宽高
+          cancel: function(index, layero){    // 监听关闭事件，隐藏弹层
+            $("#layui-layer-shade1").css("display","none")
+            $("#layui-layer1").css("display","none")
+            return false;
+          },
+          content: `
+            <form class="layui-form" action="">
+              <div class="layui-form-item">
+                <label class="layui-form-label">类型</label>
+                <div class="layui-input-block">
+                  <input type="text" name="submit_score" value="{{data.group_type}}"  lay-filter="submit_score1" required  lay-verify="required" max-length="15" disabled autocomplete="off" class="layui-input">
+                </div>
+              </div>
+
+
+            {% if data.group_type == '组长' %}
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">成绩</label>
+                    <div class="layui-input-block">
+                      <input type="text" name="submit_score"  lay-filter="submit_score1" required  lay-verify="required" max-length="15" placeholder="请输入成绩" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <div class="layui-input-block">
+                      <button class="layui-btn" lay-submit lay-filter="submit1" >立即提交</button>
+                      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                  </div>
+            {% elif data.group_type == '秘书' %}
+                  <div class="layui-form-item layui-form-text">
+                    <label class="layui-form-label">评语</label>
+                    <div class="layui-input-block">
+                      <textarea name="submit_remark" placeholder="请输入内容" class="layui-textarea" max-length="50"></textarea>
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <div class="layui-input-block">
+                      <button class="layui-btn" lay-submit lay-filter="submit1" >立即提交</button>
+                      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                  </div>
+            {% else %}
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">提交</label>
+                    <div class="layui-input-block">
+                      <input type="text" name="submit_score" value="阅卷教师只有评论毕业论文信息"  lay-filter="submit_score1" required  lay-verify="required" max-length="15" disabled autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+            {% endif %}
+            </form>
+          `
+        });
+
+    // 设置课题(打开弹出层)
+    function setSelectTitle(index,id){ //  #layui-layer-shade1,#layui-layer1
+        $("#layui-layer-shade1").css("display","block")
+        $("#layui-layer1").css("display","block")
+        // 提交的对象
+        $("#student_index").val(index)
+        $("#student_id").val(id)
+    }
+
+    // 提交课题介绍
+    layui.use(['layer', 'jquery', 'form'], function () {
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        var form = layui.form;
+        form.on('submit(submit1)', function(data){
+            let submit_score = data.field['submit_score']
+            let submit_remark = data.field['submit_remark']
+            let index = $("#student_index").val()
+            let id = $("#student_id").val()
+            let teacher_type = $("#teacher_type").val()
+
+            // 根据选择的类型，访问对应的接口
+            if(teacher_type == '组长'){
+                // 检测数据是否为空
+                submit_score = submit_score ? submit_score.replace(" ","") : ""
+                if(!submit_score){
+                    layer.msg("必填字段不能为空");
+                    return false;
+                }
+                onSecondScore(submit_score,id,index)
+            }else  if(teacher_type == '秘书'){
+                // 检测数据是否为空
+                submit_remark = submit_remark ? submit_remark.replace(" ","") : ""
+                if(!submit_remark){
+                    layer.msg("必填字段不能为空");
+                    return false;
+                }
+                onSecondRemark(submit_remark,id,index)
+            }else{
+                layer.msg("阅卷教师只能评阅毕业论文信息");
+            }
+
+            return false;
+        });
+    });
+
+    // 提交成绩信息
+    function onSecondScore(score,id,index){
+        $.ajax({
+                url:'{% url 'teacher_doSecondScore' %}',
+                method:'post',
+                data:{id,score,csrfmiddlewaretoken: $('input[name^=csrfmiddlewaretoken]').val()},
+                success:function(res){
+                    if(res.code== 200){
+                        layer.msg("提交成功！");
+                        // 设置成绩
+                        $(`#score${index}`).html(`成绩：${score}`)
+                        // 关闭窗口
+                        $(".layui-layer-ico.layui-layer-close.layui-layer-close1").click();
+                    }else{
+                        layer.msg("提交出现异常！");
+                    }
+                }
+                ,error: function(e){
+                  console.log(e);
+                  layer.msg("提交出现异常！");
+                }
+          })
+    }
+
+    // 提交评论信息
+    function onSecondRemark(remark,id,index){
+        $.ajax({
+                url:'{% url 'teacher_doSecondRemark' %}',
+                method:'post',
+                data:{id,remark,csrfmiddlewaretoken: $('input[name^=csrfmiddlewaretoken]').val()},
+                success:function(res){
+                    if(res.code== 200){
+                        layer.msg("提交成功！");
+                        // 设置成绩
+                        $(`#remark${index}`).html(`评语：${remark}`)
+                        // 关闭窗口
+                        $(".layui-layer-ico.layui-layer-close.layui-layer-close1").click();
+                    }else{
+                        layer.msg("提交出现异常！");
+                    }
+                }
+                ,error: function(e){
+                  console.log(e);
+                  layer.msg("提交出现异常！");
+                }
+          })
+    }
+
+
+    </script>
+</head>
+
+<body data-type="widgets" class="theme-white">
+
+    <div class="row-content am-cf">
+
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 中期检查 <small>查看</small></div>
+                        <p class="page-header-description">小组任务教师请选择可以参考学生上传的毕业论文，再给出成绩！</p>
+                        <p class="page-header-description">当前教师的小组身份： {{data.group_type}}</p>
+                    </div>
+<!--                    <div class="am-u-lg-3 tpl-index-settings-button">-->
+<!--                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>-->
+<!--                    </div>-->
+                </div>
+
+                <div class="row" style="height:150px">
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">学生毕业论文</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-tail am-cf">
+                                {% for i,item in graduate_data %}
+                                <div class="widget-title am-fl"  id="article_download{{i | add:1}}">
+                                    {{item.student_name}}毕业论文：
+                                    {% if item.article_docx %}
+                                         <a href="{{item.article_docx }}" title="点击下载查看" download> 点击下载毕业论文 </a>
+                                    {% else %}
+                                         <a href="javascript:;" title="请先上传毕业论文" > 暂无 </a>
+                                    {% endif %}
+                                </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {%csrf_token%}
+                <input type="hidden" name="student_id" id="student_id" />
+                <input type="hidden" name="student_index" id="student_index" />
+                <input type="hidden" name="teacher_type" id="teacher_type" value="{{data.group_type}}"/>
+
+
+                {% for i,item in score_data %}
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading">
+                            <span id="student_name{{i | add:1 }}">{{item.student_name}} </span>
+                            <small id="name{{i | add:1 }}">{{item.name}}</small>
+                        </div>
+                        <p class="page-header-description"  id="brief{{i | add:1 }}"> 介绍： {{item.brief}}</p>
+                        <p class="page-header-description"  id="score{{i | add:1 }}"> 成绩： {{item.second_score}}</p>
+                        <p class="page-header-description"  id="remark{{i | add:1 }}"> 评语： {{item.second_remark}}</p>
+                    </div>
+                    <div class="am-u-lg-3 tpl-index-settings-button" onclick="setSelectTitle({{i | add:1 }},{{item.student_id}})">
+                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 评分</button>
+                    </div>
+                </div>
+                {% endfor %}
+
+                </div>
+
+    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>毕业设计管理系统</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+    {% include 'public/script.html' %}
+
+    {% include 'public/style.html' %}
+    <style>
+        #select-txt{
+            position:absolute;
+            margin-top:6px;
+        }
+    </style>
+
+    <script>
+       // 删除学生
+        function onDeleteData(id){
+            console.log("需要删除的id是",id);
+            $.ajax({
+                url:'{% url 'admin_doDeleteStudent' %}',
+                method:"post",
+                data:{id: id, csrfmiddlewaretoken: $('input[name^=csrfmiddlewaretoken]').val()},
+                success:function(res){
+                    layer.msg(res.msg)
+                    if(res.code == 200){
+                          let trList = $("#table-list tr");
+                          trList.each((index,item)=>{
+                              if($(item)[0].dataset.id == id){
+                                  console.log("已经找到当前id",id);
+                                  // 将当前tr节点删除
+                                  $(item).remove();
+                              }
+                          })
+                    }
+                }
+            })
+        }
+       // 查询学生
+        function onSearchData(){
+            let keywords_name = $('select[name^=keywords_name]').val()
+            let keywords_value = $('input[name^=keywords_value]').val()
+            // 检测value是否为空
+            keywords_value = keywords_value ? keywords_value.replace(" ") : null
+            if(!keywords_value){
+                layer.msg("关键词不能为空！");
+                return;
+            }
+            // 然后再发送请求
+            $.ajax({
+                url:'{% url 'admin_doSearchStudent' %}',
+                method:"post",
+                data:{keywords_name, keywords_value, csrfmiddlewaretoken: $('input[name^=csrfmiddlewaretoken]').val()},
+                success:function(res){
+                    if(res.code == 200){
+                          let trList = $("#table-list");
+                          // 检测空值 (字符串列表有2个字符)
+                          if(res.data.length == 2){
+                             layer.msg("没有查询到相关数据！");
+                             return;
+                          }
+                          layer.msg(res.msg)
+                          // 生成新节点
+                          let liNode = "";
+                          JSON.parse(res.data).forEach(item=>{
+                              liNode += `
+                                    <tr class="gradeX" data-id="${item.pk}">
+                                        <td>${item.fields.number}</td>
+                                        <td>${item.fields.name}</td>
+                                        <td>${item.fields.register_time.replace("T"," ").replace("Z","")}</td>
+                                        <td>
+                                            <div class="tpl-table-black-operation">
+                                                <a href="javascript:;" class="tpl-table-black-operation-del" onclick="onDeleteData('${item.pk}')">
+                                                    <i class="am-icon-trash"></i> 删除
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+                              `
+                          })
+                          trList[0].innerHTML = liNode
+                    }
+                }
+            })
+        }
+    </script>
+</head>
+
+<body data-type="widgets"   class="theme-white">
+
+    <div class="row-content am-cf">
+                <div class="row">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title  am-cf">学生列表</div>
+                            </div>
+                            <div class="widget-body  am-fr">
+                                <div class="am-u-sm-12 am-u-md-6 am-u-lg-6">
+                                </div>
+                                <div class="am-u-sm-12 am-u-md-6 am-u-lg-3">
+                                    <span id="select-txt"> 类别：</span>
+                                    <div class="am-form-group tpl-table-list-select">
+                                        <select name="keywords_name" data-am-selected="{btnSize: 'sm'}">
+                                          <option value="name" selected>姓名</option>
+                                          <option value="number">ID号</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="am-u-sm-12 am-u-md-12 am-u-lg-3">
+                                    <div class="am-input-group am-input-group-sm tpl-form-border-form cl-p">
+                                        <input type="text" class="am-form-field " placeholder="请输入关键词" name="keywords_value" >
+                                        <span class="am-input-group-btn">
+                                            <button class="am-btn  am-btn-default am-btn-success tpl-table-list-field am-icon-search" onclick="onSearchData()" type="button"></button>
+                                          </span>
+                                    </div>
+                                </div>
+
+                                <div class="am-u-sm-12">
+                                    {%csrf_token%}
+                                    <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
+                                        <thead>
+                                            <tr>
+                                                <th>ID号</th>
+                                                <th>作者</th>
+                                                <th>注册时间</th>
+                                                <th>操作</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="table-list">
+                                            {% for item in data_list %}
+                                                <tr class="gradeX" data-id="{{item.id}}">
+                                                    <td>{{item.number}}</td>
+                                                    <td>{{item.name}}</td>
+                                                    <td>{{item.register_time | date:'Y-m-d'}}</td>
+                                                    <td>
+                                                        <div class="tpl-table-black-operation">
+                                                            <a href="javascript:;" class="tpl-table-black-operation-del" onclick="onDeleteData('{{item.id}}')">
+                                                                <i class="am-icon-trash"></i> 删除
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            {% endfor %}
+                                            <!-- more data -->
+                                        </tbody>
+                                    </table>
+                                </div> 
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>

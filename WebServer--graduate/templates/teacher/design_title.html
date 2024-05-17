@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>毕业设计管理系统</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+    {% include 'public/script.html' %}
+
+    {% include 'public/style.html' %}
+
+    <style>
+        .widget-body.widget-body-lg.am-fr
+        .am-scrollable-horizontal {
+            height:250px!;
+            min-height:250px!important;
+        }
+        .am-scrollable-horizontal{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .widget-tail{
+            border-top: 1px solid #eef1f5;
+            height:30px;
+            margin-top:300px;
+        }
+        .layui-layer.layui-layer-page .layui-form-label{
+            width:100px!important;
+        }
+        .layui-layer.layui-layer-page .layui-input-block{
+            width:400px!important;
+        }
+    </style>
+    <script>
+        // 上传任务书或者指导书
+        layui.use('upload', function(){
+          var upload = layui.upload;
+
+          //执行实例（任务书）
+          var uploadInst1 = upload.render({
+            elem: '#upload1' //绑定元素
+            ,accept: 'file' //允许上传的文件类型
+            ,exts: 'docx|doc' //允许上传的文件名后缀
+            ,url: '{% url 'teacher_doUploadTask' %}'
+            ,done: function(res){
+               console.log("1上传的结果是",res);
+               if(res.code == 200){
+                    $("#task_download").html( `已经上传的任务书： <a href="${res.data}" title="点击下载查看" download> 点击下载任务书 </a>` )
+                    layer.msg("上传任务书成功！");
+               }else{
+                    layer.msg("上传指导书出现异常！");
+               }
+            }
+            ,error: function(e){
+              console.log(e);
+              layer.msg("上传任务书出现异常！");
+            }
+          });
+          //执行实例（指导书）
+          var uploadInst2 = upload.render({
+            elem: '#upload2' //绑定元素
+            ,accept: 'file' //允许上传的文件类型
+            ,exts: 'docx|doc' //允许上传的文件名后缀
+            ,url: '{% url 'teacher_doUploadGuide' %}'
+            ,done: function(res){
+               console.log("2上传的结果是",res);
+               if(res.code == 200){
+                    $("#guide_download").html( `已经上传的指导书： <a href="${res.data}" title="点击下载查看" download> 点击下载任务书 </a>` )
+                    layer.msg("上传指导书成功！");
+               }else{
+                    layer.msg("上传指导书出现异常！");
+               }
+            }
+            ,error: function(e){
+              console.log(e);
+              layer.msg("上传指导书出现异常！");
+            }
+          });
+        });
+        // 设置课题(打开弹出层)
+        function setSelectTitle(){
+            console.log("已经通知打开")
+            layer.open({
+              type: 1,
+              area: ['620px', '240px'], //宽高
+              content: `
+                <form class="layui-form" action="">
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">课题名称</label>
+                    <div class="layui-input-block">
+                      <input type="text" name="submit_name" required  lay-verify="required" max-length="15" placeholder="请输入课题名称" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">课题介绍</label>
+                    <div class="layui-input-block">
+                      <input type="text" name="submit_brief" required  lay-verify="required" max-length="50"  placeholder="请输入课题介绍" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <div class="layui-input-block">
+                      <button class="layui-btn" lay-submit lay-filter="submit1" >立即提交</button>
+                      <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                    </div>
+                  </div>
+                </form>
+              `
+            });
+        }
+        // 提交课题介绍
+        layui.use('form', function(){
+          var form = layui.form;
+          form.on('submit(submit1)', function(data){
+            onSubmitBrief(data.field);
+            return false;
+          });
+        });
+        function onSubmitBrief(data){
+            // 检测数据是否为空
+            let name = data['submit_name']
+            let brief = data['submit_brief']
+            name = name ? name.replace(" ","") : ""
+            brief = brief ? brief.replace(" ","") : ""
+            if(!name || !brief){
+                layer.msg("必填字段不能为空");
+                return;
+            }
+
+            // 再提交数据
+            $.ajax({
+                    url:'{% url 'teacher_doSubmitBrief' %}',
+                    method:'post',
+                    data:{name,brief,csrfmiddlewaretoken: $('input[name^=csrfmiddlewaretoken]').val()},
+                    success:function(res){
+                        if(res.code== 200){
+                            $("#name").html(name)
+                            $("#brief").html("介绍："+brief)
+                            layer.msg("提交成功！");
+                            // 关闭窗口
+                            $(".layui-layer-ico.layui-layer-close.layui-layer-close1").click();
+                        }else{
+                            layer.msg("提交出现异常！");
+                        }
+                    }
+                    ,error: function(e){
+                      console.log(e);
+                      layer.msg("提交出现异常！");
+                    }
+              })
+        }
+        // 确认指导学生
+        function onConfirmStudent(student_id,student_name){
+            // 如果已经有指导的学生，则不允许再选择
+            let name = $("#student_name").html()
+            name = name ? name.replace(" ","") : 'None'
+            if(name != 'None'){
+                layer.msg("已经选择指导的毕业学生！不允许再修改");
+                return;
+            }
+
+            // 再次进行确认
+            layer.confirm('请确认当前学生是否作为您唯一的指导学生?', {icon: 3, title:'提示'}, function(index){
+              $.ajax({
+                    url:'{% url 'teacher_doConfirmStudent' %}',
+                    method:'post',
+                    data:{student_id,student_name,csrfmiddlewaretoken: $('input[name^=csrfmiddlewaretoken]').val()},
+                    success:function(res){
+                        if(res.code== 200){
+                            $("#student_name").html(student_name)
+                            layer.msg("提交成功！");
+                        }else{
+                            layer.msg("提交出现异常！");
+                        }
+                    }
+                    ,error: function(e){
+                      console.log(e);
+                      layer.msg("提交出现异常！");
+                    }
+              })
+              layer.close(index);
+            },function(){});
+        }
+    </script>
+</head>
+
+<body data-type="widgets" class="theme-white">
+
+    <div class="row-content am-cf">
+
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 设计开题 <small>报告</small></div>
+                        <p class="page-header-description">指导教师请选择指导学生，并上传任务书和指导书word文档！</p>
+                    </div>
+<!--                    <div class="am-u-lg-3 tpl-index-settings-button">-->
+<!--                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>-->
+<!--                    </div>-->
+                </div>
+
+                <div class="row" style="height:420px">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">上传任务书</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body  widget-body-lg am-fr">
+                                <div class="am-scrollable-horizontal ">
+                                    <div class="layui-upload-drag" id="upload1">
+                                      <i class="layui-icon"></i>
+                                      <p>点击上传，或拖拽word文件到此处</p>
+                                      <div class="layui-hide" id="uploadDemoView1">
+                                        <hr>
+                                        <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-tail am-cf">
+                                <div class="widget-title am-fl" id="task_download">
+                                    已经上传的任务书：
+                                    {% if data.task_docx %}
+                                         <a href="{{data.task_docx }}" title="点击下载查看" download> 点击下载任务书 </a>
+                                    {% else %}
+                                         <a href="javascript:;" title="请先上传任务书" > 暂无 </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">上传指导书</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body  widget-body-lg am-fr">
+                                <div class="am-scrollable-horizontal ">
+                                    <div class="layui-upload-drag" id="upload2">
+                                      <i class="layui-icon"></i>
+                                      <p>点击上传，或拖拽word文件到此处</p>
+                                      <div class="layui-hide" id="uploadDemoView2">
+                                        <hr>
+                                        <img src="" alt="上传成功后渲染" style="max-width: 196px">
+                                      </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="widget-tail am-cf">
+                                <div class="widget-title am-fl"  id="guide_download">
+                                    已经上传的指导书：
+                                    {% if data.guide_docx %}
+                                         <a href="{{data.guide_docx }}" title="点击下载查看" download> 点击下载指导书 </a>
+                                    {% else %}
+                                         <a href="javascript:;" title="请先上传指导书" > 暂无 </a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading">
+                            <span id="student_name">{{data.student_name}} </span>
+                            <small id="name">{{data.name}}</small>
+                        </div>
+                        <p class="page-header-description"  id="brief"> 介绍： {{data.brief}}</p>
+                    </div>
+                    <div class="am-u-lg-3 tpl-index-settings-button" onclick="setSelectTitle()">
+                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">毕业学生列表</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body  widget-body-lg am-fr">
+
+                                    {%csrf_token%}
+                                <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
+                                    <thead>
+                                        <tr>
+                                            <th>序号</th>
+                                            <th>ID</th>
+                                            <th>姓名</th>
+                                            <th>操作</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for i,item in data_list %}
+                                            <tr class="gradeX">
+                                                <td>{{i|add:1}}</td>
+                                                <td>{{item.number}}</td>
+                                                <td>{{item.name}}</td>
+                                                <td>
+                                                    <div class="tpl-table-black-operation">
+                                                        <a href="javascript:;" onclick="onConfirmStudent('{{item.id}}','{{item.name}}')">
+                                                            <i class="am-icon-life-ring"></i> 提交
+                                                        </a>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        {% endfor %}
+                                        <!-- more data -->
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+
+    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>

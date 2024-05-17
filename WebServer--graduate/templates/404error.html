@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Amaze UI Admin index Examples</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <link rel="icon" type="image/png" href="/static/lib/admin-assets/i/favicon.png">
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+    {% include 'public/script.html' %}
+
+    {% include 'public/style.html' %}
+
+</head>
+
+<body data-type="widgets">
+    <div class="am-g tpl-g">
+        <!-- 头部 -->
+        {% include 'public/header.html' %}
+
+        <!-- 风格切换 -->
+        {% include 'public/theme.html' %}
+
+        <!-- 侧边导航栏 -->
+        <div class="left-sidebar">
+            <!-- 用户信息 -->
+            <div class="tpl-sidebar-user-panel">
+                <div class="tpl-user-panel-slide-toggleable">
+                    <div class="tpl-user-panel-profile-picture">
+                        <img src="/static/lib/admin-assets/img/user04.png" alt="">
+                    </div>
+                    <span class="user-panel-logged-in-text">
+              <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
+              ID: {{request.session.userinfo.number}}
+          </span>
+                </div>
+            </div>
+
+            <!-- 菜单 -->
+            <ul class="sidebar-nav">
+                <li class="sidebar-nav-link">
+                    <a href="{% url 'student_index' %}" class="{% if request.path == '/home/teacher/index' %} active  {% endif %}">
+                        <i class="am-icon-home sidebar-nav-link-logo"></i> 个人信息
+                    </a>
+                </li>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 内容区域 -->
+        <div class="tpl-content-wrapper">
+
+
+
+            <div class="row-content am-cf">
+                <div class="widget am-cf">
+                    <div class="widget-body">
+                        <div class="tpl-page-state">
+                            <div class="tpl-page-state-title am-text-center tpl-error-title">404</div>
+                            <div class="tpl-error-title-info">Page Not Found</div>
+                            <div class="tpl-page-state-content tpl-error-content">
+
+                                <p>对不起,没有找到您所需要的页面,可能是URL不确定,或者页面已被移除。</p>
+                                <button type="button" class="am-btn am-btn-secondary am-radius tpl-error-btn" onclick="window.location.href='/login'">Back Home</button></div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    </div>
+    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>

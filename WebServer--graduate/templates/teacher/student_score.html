@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>毕业设计管理系统</title>
+    <meta name="description" content="这是一个 index 页面">
+    <meta name="keywords" content="index">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+
+    {% include 'public/script.html' %}
+
+    {% include 'public/style.html' %}
+
+    <style>
+        .am-scrollable-horizontal{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .widget-tail{
+            display: flex;
+            flex-direction: column;
+            height:60px;
+            margin-top:10px;
+        }
+        .layui-layer.layui-layer-page .layui-form-label{
+            width:100px!important;
+        }
+        .layui-layer.layui-layer-page .layui-input-block{
+            width:400px!important;
+        }
+        textarea{
+            resize:none!important;
+        }
+        /*隐藏方法*/
+        #layui-layer-shade1,#layui-layer1{
+            display:none;
+        }
+    </style>
+    <script>
+       /*加载弹层*/
+        layer.open({
+          type: 1,
+          area: ['620px', '360px'], //宽高
+          cancel: function(index, layero){    // 监听关闭事件，隐藏弹层
+            $("#layui-layer-shade1").css("display","none")
+            $("#layui-layer1").css("display","none")
+            return false;
+          },
+          content: `
+            <form class="layui-form" action="">
+              <div class="layui-form-item">
+                <label for="type"  class="layui-form-label">类型:</label>
+                <div class="layui-input-block">
+                    <select name="submit_type" lay-verify="required" lay-filter="submit_type1" id="select1">
+                        <option value="english" selected >外语成绩</option>
+                        <option value="article">论文成绩</option>
+                    </select>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label class="layui-form-label">成绩</label>
+                <div class="layui-input-block">
+                  <input type="text" name="submit_score"  lay-filter="submit_score1" required  lay-verify="required" max-length="15" placeholder="请输入课题名称" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">成绩评价</label>
+                <div class="layui-input-block">
+                  <textarea name="submit_remark" placeholder="请输入内容" class="layui-textarea" max-length="50"></textarea>
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <div class="layui-input-block">
+                  <button class="layui-btn" lay-submit lay-filter="submit1" >立即提交</button>
+                  <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+              </div>
+            </form>
+          `
+        });
+
+    // 设置课题(打开弹出层)
+    function setSelectTitle(){ //  #layui-layer-shade1,#layui-layer1
+        $("#layui-layer-shade1").css("display","block")
+        $("#layui-layer1").css("display","block")
+    }
+
+    // 提交课题介绍
+    layui.use(['layer', 'jquery', 'form'], function () {
+        var layer = layui.layer;
+        var $ = layui.jquery;
+        var form = layui.form;
+        form.on('submit(submit1)', function(data){
+            let submit_type = data.field['submit_type']
+            let submit_score = data.field['submit_score']
+            let submit_remark = data.field['submit_remark']
+
+
+            // 检测数据是否为空
+            submit_score = submit_score ? submit_score.replace(" ","") : ""
+            submit_remark = submit_remark ? submit_remark.replace(" ","") : ""
+            if(!submit_score || !submit_remark){
+                layer.msg("必填字段不能为空");
+                return false;
+            }
+
+            // 根据选择的类型，访问对应的接口
+            if(submit_type == 'english'){
+                onSubmitEnglish(submit_score,submit_remark)
+            }else{
+                onSubmitArticle(submit_score,submit_remark)
+            }
+
+            return false;
+        });
+    });
+
+    // 提交外语成绩
+    function onSubmitEnglish(score,remark){
+        $.ajax({
+                url:'{% url 'teacher_doSubmitEnglish' %}',
+                method:'post',
+                data:{score,remark,csrfmiddlewaretoken: $('input[name^=csrfmiddlewaretoken]').val()},
+                success:function(res){
+                    if(res.code== 200){
+                        layer.msg("提交成功！");
+                        // 设置成绩
+                        $('#english_score').html(`外语成绩：${score}`)
+                        // 关闭窗口
+                        $(".layui-layer-ico.layui-layer-close.layui-layer-close1").click();
+                    }else{
+                        layer.msg("提交出现异常！");
+                    }
+                }
+                ,error: function(e){
+                  console.log(e);
+                  layer.msg("提交出现异常！");
+                }
+          })
+    }
+
+    // 提交论文成绩
+    function onSubmitArticle(score,remark){
+        $.ajax({
+                url:'{% url 'teacher_doSubmitArticle' %}',
+                method:'post',
+                data:{score,remark,csrfmiddlewaretoken: $('input[name^=csrfmiddlewaretoken]').val()},
+                success:function(res){
+                    if(res.code== 200){
+                        layer.msg("提交成功！");
+                        // 设置成绩
+                        $('#article_score').html(`论文成绩：${score}`)
+                        // 关闭窗口
+                        $(".layui-layer-ico.layui-layer-close.layui-layer-close1").click();
+                    }else{
+                        layer.msg("提交出现异常！");
+                    }
+                }
+                ,error: function(e){
+                  console.log(e);
+                  layer.msg("提交出现异常！");
+                }
+          })
+    }
+
+
+    // 导出毕业数据
+    function onOutputArticle(){
+          $.ajax({
+                url:'{% url 'teacher_doOutputArticle' %}',
+                method:'get',
+                success:function(res){
+                    if(res.code== 200){
+                        console.log($("#output-article")[0],res.data,res)
+                        $("#output-article")[0].href = res.data
+                        setTimeout(()=>{
+                            // 有时jquery的点击事件触发会无响应
+                            $("#output-article")[0].click()
+                        },500)
+                        layer.msg("导出成功！");
+                    }else{
+                        layer.msg("导出出现异常！");
+                    }
+                }
+                ,error: function(e){
+                  console.log(e);
+                  layer.msg("导出出现异常！");
+                }
+          })
+    }
+    </script>
+</head>
+
+<body data-type="widgets" class="theme-white">
+
+    <div class="row-content am-cf">
+
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 学生成绩 <small>查看</small></div>
+                        <p class="page-header-description">指导教师请选择下载学生上传的毕业论文，再给出成绩！</p>
+                    </div>
+<!--                    <div class="am-u-lg-3 tpl-index-settings-button">-->
+<!--                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>-->
+<!--                    </div>-->
+                </div>
+
+                <div class="row" style="height:150px">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">学生外语文档</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-tail am-cf">
+                                <div class="widget-title am-fl" id="english_download">
+                                    外语文档：
+                                    {% if data.english_docx %}
+                                         <a href="{{data.english_docx }}" title="点击下载查看" download> 点击下载外文文档 </a>
+                                    {% else %}
+                                         <a href="javascript:;" title="请先上传外文文档" > 暂无 </a>
+                                    {% endif %}
+                                </div>
+                                <div class="widget-title am-fl" id="english_score">
+                                    外语成绩：
+                                    {% if data.english_score %}
+                                        {{data.english_score}}
+                                    {% else %}
+                                          暂无成绩
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-6">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">学生毕业论文</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-tail am-cf">
+                                <div class="widget-title am-fl"  id="article_download">
+                                    毕业论文：
+                                    {% if graduate_data.article_docx %}
+                                         <a href="{{graduate_data.article_docx }}" title="点击下载查看" download> 点击下载毕业论文 </a>
+                                    {% else %}
+                                         <a href="javascript:;" title="请先上传毕业论文" > 暂无 </a>
+                                    {% endif %}
+                                </div>
+                                <div class="widget-title am-fl" id="article_score">
+                                    论文成绩：
+                                    {% if graduate_data.guide_score %}
+                                        {{graduate_data.guide_score}}
+                                    {% else %}
+                                          暂无成绩
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="row   am-cf index-top">
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                        <div class="page-header-heading">
+                            <span id="student_name">{{data.student_name}} </span>
+                            <small id="name">{{data.name}}</small>
+                        </div>
+                        <p class="page-header-description"  id="brief"> 介绍： {{data.brief}}</p>
+                    </div>
+                    <div class="am-u-lg-3 tpl-index-settings-button" onclick="setSelectTitle()">
+                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 评分</button>
+                    </div>
+                </div>
+
+                <div class="row">
+
+                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                        <div class="widget am-cf">
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">毕业学生信息</div>
+                                <div class="widget-function am-fr">
+                                    <a href="javascript:;" class="am-icon-cog"></a>
+                                </div>
+                            </div>
+                            <div class="widget-body  widget-body-lg am-fr">
+
+                                {%csrf_token%}
+
+                                <a href="javascript:;" download id="output-article" style="opacity:0;visibility:hidden;">点击下载</a>
+
+                                <form class="am-form tpl-form-line-form">
+                                    <div class="am-form-group">
+                                        <label for="user-name" class="am-u-sm-3 am-form-label">课题 <span class="tpl-form-line-small-title">Title</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="tpl-form-input" id="title" value="{{total_data.name}}" placeholder="请输入课题文字">
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">介绍 <span class="tpl-form-line-small-title">Brief</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.brief}}" placeholder="介绍信息" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">学生ID <span class="tpl-form-line-small-title">Number</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.number}}" placeholder="学生ID" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">毕业学生 <span class="tpl-form-line-small-title">Student</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.student_name}}" placeholder="毕业学生" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">指导教师 <span class="tpl-form-line-small-title">Teacher</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.teacher_name}}" placeholder="指导教师" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">开题答辩成绩 <span class="tpl-form-line-small-title">FirstScore</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.first_score}}" placeholder="开题答辩成绩" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">开题答辩评语 <span class="tpl-form-line-small-title">FirstRemark</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.first_remark}}" placeholder="开题答辩评语" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">外文翻译成绩 <span class="tpl-form-line-small-title">EnglishScore</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.english_score}}" placeholder="外文翻译成绩" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">外文翻译评语 <span class="tpl-form-line-small-title">EnglishRemark</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.english_remark}}" placeholder="外文翻译评语" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">中期检查成绩 <span class="tpl-form-line-small-title">MiddleScore</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.second_score}}" placeholder="中期检查成绩" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">中期检查评语 <span class="tpl-form-line-small-title">MiddleRemark</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.second_remark}}" placeholder="中期检查评语" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">毕业答辩成绩 <span class="tpl-form-line-small-title">GraduateScore</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.third_score}}" placeholder="毕业答辩成绩" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">毕业答辩评语 <span class="tpl-form-line-small-title">GraduateRemark</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.third_remark}}" placeholder="毕业答辩评语" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">毕业答辩等级 <span class="tpl-form-line-small-title">GraduateRank</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.third_rank}}" placeholder="毕业答辩等级" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">毕业论文成绩 <span class="tpl-form-line-small-title">ArticleScore</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.guide_score}}" placeholder="毕业论文成绩" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">毕业论文评语 <span class="tpl-form-line-small-title">ArticleRemark</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.guide_remark}}" placeholder="毕业论文评语" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">查阅论文成绩 <span class="tpl-form-line-small-title">ViewScore</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.view_score}}" placeholder="查阅论文成绩" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+
+                                    <div class="am-form-group">
+                                        <label for="user-email" class="am-u-sm-3 am-form-label">查阅论文评语 <span class="tpl-form-line-small-title">ViewRemark</span></label>
+                                        <div class="am-u-sm-9">
+                                            <input type="text" class="am-form-field tpl-form-no-bg"  value="{{total_data.view_remark}}" placeholder="查阅论文评语" data-am-datepicker="" readonly=""/>
+                                        </div>
+                                    </div>
+                                    <div class="am-form-group">
+                                        <div class="am-u-sm-9 am-u-sm-push-3">
+                                            <button type="button" class="am-btn am-btn-primary tpl-btn-bg-color-success " onclick="onOutputArticle()">导出文档</button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+
+
+
+                </div>
+
+            </div>
+
+    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="/static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>

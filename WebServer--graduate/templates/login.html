@@ -1,0 +1,152 @@
+<!--login.html-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- 基础页面设置，包括标题，字符编码， viewport 配置等 -->
+    <!-- 页面基本元数据定义 -->
+    <meta charset="utf-8"> <!-- 指定文档编码格式为UTF-8 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- 指定IE浏览器以最新模式渲染页面 -->
+    <title>毕业设计管理系统</title> <!-- 页面标题 -->
+    <meta name="description" content="这是一个 index 页面"> <!-- 页面描述 -->
+    <meta name="keywords" content="index"> <!-- 页面关键字,用于搜索引擎索引 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- 适应移动设备的视口设置 -->
+    <meta name="renderer" content="webkit"> <!-- 指定页面在webkit内核浏览器中渲染 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> <!-- 防止被应用程序缓存 -->
+    <meta name="apple-mobile-web-app-title" content="Amaze UI"> <!--iOS移动设备上的应用标题 -->
+
+
+    <!-- 包含公共的脚本文件 -->
+    {% include 'public/script.html' %}
+
+    <!-- 包含公共的样式文件 -->
+    {% include 'public/style.html' %}
+
+    <!-- 页面特定的样式 -->
+    <style>
+        img{
+           /* 设置图片的宽高及适应方式 */
+            width:90%;
+            object-fit:cover;
+        }
+        .tpl-login-logo{
+            /* 设置登录页面Logo的高度和显示方式 */
+            height:160px!important;
+            display:flex;
+            justify-content:center
+        }
+        .am-form-group {
+            /* 设置表单组的间距 */
+            margin-bottom: 3rem!important;
+        }
+        input,
+        input::placeholder{
+            /* 设置输入框的字体大小和间距 */
+            font-size:18px!important;
+            letter-spacing:1px;
+        }
+        input{
+            /* 设置输入框的内边距 */
+            padding:8px 10px!important;
+        }
+        .layui-btn{
+            /* 设置按钮的字体大小，间距和高度 */
+            font-size:18px !important;
+            letter-spacing:2px;
+            height:45px!important;
+        }
+        body{
+            /* 设置页面背景 */
+            height: 100%!important;
+            margin: 0!important;
+            padding: 0!important;
+            background-image: url('../static/images/background.jpg')!important;
+            background-position: center!important;
+            background-repeat: no-repeat!important;
+            background-size: cover !important;
+
+        }
+    </style>
+</head>
+
+<body data-type="login" class="theme-white">
+    <!-- 登录页面容器 -->
+    <div class="am-g tpl-g">
+
+        <div class="tpl-login">
+            <!-- 登录内容区域 -->
+            <div class="tpl-login-content">
+                <div class="tpl-login-logo">
+                    <!-- 登录页面Logo -->
+                    <img src="../static/images/logo3.png" alt=""/>
+                </div>
+                <form  class="layui-form am-form tpl-form-line-form">
+                    <!-- CSRF令牌保护 -->
+                    {%csrf_token%}
+                    <div class="am-form-group">
+                        <!-- 输入ID号的表单组 -->
+                        <input type="text" class="tpl-form-input" id="number" name="number" value="" required lay-verify="required"  autocomplete="new-password" placeholder="请输入ID号"  maxlength="20">
+                    </div>
+                    <div class="am-form-group">
+                        <!-- 输入密码的表单组 -->
+                        <input type="password" class="tpl-form-input" id="password" name="password" value="" required lay-verify="required" autocomplete="new-password" placeholder="请输入密码"  maxlength="18">
+                    </div>
+                    <div class="am-form-group" style="margin-top:40px">
+                        <!-- 提交按钮 -->
+                        <button type="button"  lay-submit lay-filter="submit1" class="layui-btn am-btn am-btn-primary  am-btn-block tpl-btn-bg-color-success  tpl-login-btn">提交</button>
+                    </div>
+                    <div class="am-form-group" style="margin-top:40px">
+                        <!-- 注册链接 -->
+                        <a href="{% url 'myhome_register' %}">还没有帐号？快速注册</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- 使用 layui 框架进行表单提交的 JavaScript 代码 -->
+    <script>
+        // 使用 layui 框架中的 layer、jquery 和 form 模块
+        layui.use(['layer', 'jquery', 'form'], function(){
+          var form = layui.form;
+          var $ = layui.jquery;
+
+          /**
+           * 监听表单的提交事件
+           * @param {Object} data 表单提交时的数据对象
+           * @returns {boolean} 返回 false 以阻止表单的默认提交行为
+           */
+          form.on('submit(submit1)', function(data){
+            // 打印表单数据
+            console.log(JSON.stringify(data.field));
+
+            // 发起提交表单的 AJAX 请求
+            $.ajax({
+                url:"{% url 'myhome_doLogin' %}", // 请求的 URL
+                method:'post', // 请求方法
+                data:data.field, // 提交的数据
+                success:function(res){
+                    // 请求成功时的处理
+                    console.log("提交成功",res);
+                    layer.msg(res.msg) // 使用 layer 框架显示消息
+                    // 根据返回结果进行页面跳转
+                    if(res.code == 200){
+                        setTimeout(()=>{
+                             window.location.href = "{% url 'myhome_index' %}"
+                        },1000) // 1秒后跳转到首页
+                    }
+                }
+
+            })
+            return false; // 阻止表单的默认提交行为
+          });
+        });
+    </script>
+
+
+    <!-- 包含页面需要的 JavaScript 库 -->
+    <script src="./../static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="./../static/lib/admin-assets/js/app.js"></script>
+
+</body>
+
+</html>
