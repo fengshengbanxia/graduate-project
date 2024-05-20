@@ -1,169 +1,193 @@
 <div class="left-sidebar">
-            <!-- 用户信息 -->
-            <div class="tpl-sidebar-user-panel">
-                <div class="tpl-user-panel-slide-toggleable">
-                    <div class="tpl-user-panel-profile-picture">
-
-                        {% if request.session.userinfo.type == 'admin' %}
-                            <img src="/static/lib/admin-assets/img/user01.png" alt="">
-                        {% elif request.session.userinfo.type == 'teacher' %}
-                            <img src="/static/lib/admin-assets/img/user02.png" alt="">
-                        {% elif request.session.userinfo.type == 'student' %}
-                            <img src="/static/lib/admin-assets/img/user03.png" alt="">
-                        {% endif %}
-                    </div>
-                    <span class="user-panel-logged-in-text">
-              <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
-                {{request.session.userinfo.number}}
-          </span>
-                </div>
-            </div>
-
-            <!-- 菜单 -->
-            <ul class="sidebar-nav">
-                {% if request.session.userinfo.type == 'student'  %}
-                    <li class="sidebar-nav-link">
-                        <a _href="{% url 'student_index' %}" class="{% if request.path == '/home/student/index' %} active  {% endif %}">
-                            <i class="am-icon-home sidebar-nav-link-logo"></i> 个人信息
-                        </a>
-                    </li>
-                    <li class="sidebar-nav-link">
-                        <a _href="javascript:;" class="sidebar-nav-sub-title">
-                            <i class="am-icon-paper-plane-o sidebar-nav-link-logo"></i> 选题信息
-                            <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
-                        </a>
-                        <ul class="sidebar-nav sidebar-nav-sub"  style="{% if request.path ==  '/home/student/select_title'  or  request.path ==  '/home/student/group'   %} display: block;  {% endif %}">
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'student_select_title' %}" class="{% if request.path == '/home/student/select_title' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 查看选题
-                                </a>
-                            </li>
-
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'student_group' %}" class="{% if request.path == '/home/student/group' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 分组选择
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="sidebar-nav-link">
-                        <a _href="javascript:;" class="sidebar-nav-sub-title">
-                            <i class="am-icon-pencil-square-o sidebar-nav-link-logo"></i> 毕业信息
-                            <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
-                        </a>
-                        <ul class="sidebar-nav sidebar-nav-sub"  style="{% if request.path ==  '/home/student/title_msg'  or  request.path ==  '/home/student/middle_check'  or  request.path ==  '/home/student/graduate_answer'  or  request.path ==  '/home/student/graduate_article'     %} display: block;  {% endif %}">
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'student_title_msg' %}" class="{% if request.path == '/home/student/title_msg' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 开题信息
-                                </a>
-                            </li>
-
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'student_middle_check' %}" class="{% if request.path == '/home/student/middle_check' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 中期检查
-                                </a>
-                            </li>
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'student_graduate_answer' %}" class="{% if request.path == '/home/student/graduate_answer' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 毕业答辩
-                                </a>
-                            </li>
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'student_graduate_article' %}" class="{% if request.path == '/home/student/graduate_article' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 毕业论文
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                {% elif request.session.userinfo.type == 'teacher'  %}
-                    <li class="sidebar-nav-link">
-                        <a _href="{% url 'teacher_index' %}" class="{% if request.path == '/home/teacher/index' %} active  {% endif %}">
-                            <i class="am-icon-home sidebar-nav-link-logo"></i> 个人信息
-                        </a>
-                    </li>
-                    <li class="sidebar-nav-link">
-                        <a _href="javascript:;" class="sidebar-nav-sub-title">
-                            <i class="am-icon-paper-plane-o sidebar-nav-link-logo"></i> 选题信息
-                            <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
-                        </a>
-                        <ul class="sidebar-nav sidebar-nav-sub"  style="{% if request.path ==  '/home/teacher/design_title'  or  request.path ==  '/home/teacher/group'   %} display: block;  {% endif %}">
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'teacher_design_title' %}" class="{% if request.path == '/home/teacher/design_title' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 设计开题
-                                </a>
-                            </li>
-
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'teacher_group' %}" class="{% if request.path == '/home/teacher/group' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 分组选择
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="sidebar-nav-link">
-                        <a _href="javascript:;" class="sidebar-nav-sub-title">
-                            <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 毕业评分
-                            <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
-                        </a>
-                        <ul class="sidebar-nav sidebar-nav-sub"   style="{% if request.path ==  '/home/teacher/student_score'    %} display: block;  {% endif %}">
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'teacher_student_score' %}" class="{% if request.path == '/home/teacher/student_score' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 学生成绩
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="sidebar-nav-link">
-                        <a _href="javascript:;" class="sidebar-nav-sub-title">
-                            <i class="am-icon-pencil-square-o sidebar-nav-link-logo"></i> 小组任务
-                            <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
-                        </a>
-                        <ul class="sidebar-nav sidebar-nav-sub"   style="{% if request.path ==  '/home/teacher/title_msg'  or  request.path ==  '/home/teacher/middle_check'  or  request.path ==  '/home/teacher/graduate_answer'  or  request.path ==  '/home/teacher/graduate_article'     %} display: block;  {% endif %}">
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'teacher_title_msg' %}" class="{% if request.path == '/home/teacher/title_msg' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 开题答辩
-                                </a>
-                            </li>
-
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'teacher_middle_check' %}" class="{% if request.path == '/home/teacher/middle_check' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 中期检查
-                                </a>
-                            </li>
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'teacher_graduate_answer' %}" class="{% if request.path == '/home/teacher/graduate_answer' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 毕业答辩
-                                </a>
-                            </li>
-                            <li class="sidebar-nav-link">
-                                <a _href="{% url 'teacher_graduate_article' %}" class="{% if request.path == '/home/teacher/graduate_article' %} active  {% endif %}">
-                                    <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 论文查阅
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                {% elif request.session.userinfo.type == 'admin'  %}
-                    <li class="sidebar-nav-link">
-                        <a _href="{% url 'admin_index' %}" class="{% if request.path == '/home/admin/index' %} active  {% endif %}">
-                            <i class="am-icon-home sidebar-nav-link-logo"></i> 个人信息
-                        </a>
-                    </li>
-                    <li class="sidebar-nav-link">
-                        <a _href="{% url 'admin_teacher' %}"  class="{% if request.path == '/home/admin/teacher' %} active  {% endif %}">
-                            <i class="am-icon-pencil-square-o sidebar-nav-link-logo"></i> 教师管理
-                        </a>
-                    </li>
-                    <li class="sidebar-nav-link">
-                        <a _href="{% url 'admin_student' %}"  class="{% if request.path == '/home/admin/student' %} active  {% endif %}">
-                            <i class="am-icon-paper-plane-o sidebar-nav-link-logo"></i> 学生管理
-                        </a>
-                    </li>
-                    <li class="sidebar-nav-link">
-                    <a _href="{% url 'admin_title' %}"  class="{% if request.path == '/home/admin/title' %} active  {% endif %}">
-                        <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 课题管理
-
-                    </a>
-                </li>
+    <!-- 用户信息 -->
+    <div class="tpl-sidebar-user-panel">
+        <div class="tpl-user-panel-slide-toggleable">
+            <div class="tpl-user-panel-profile-picture">
+                <!-- 根据用户类型显示不同的头像 -->
+                {% if request.session.userinfo.type == 'admin' %}
+                    <img src="../../static/lib/admin-assets/img/user01.png" alt="">
+                {% elif request.session.userinfo.type == 'teacher' %}
+                    <img src="../../static/lib/admin-assets/img/user02.png" alt="">
+                {% elif request.session.userinfo.type == 'student' %}
+                    <img src="../../static/lib/admin-assets/img/user03.png" alt="">
                 {% endif %}
-            </ul>
+            </div>
+            <span class="user-panel-logged-in-text">
+                <!-- 显示用户登录状态 -->
+                <i class="am-icon-circle-o am-text-success tpl-user-panel-status-icon"></i>
+                {{request.session.userinfo.number}}
+            </span>
         </div>
+    </div>
+
+    <!-- 菜单 -->
+    <ul class="sidebar-nav">
+        <!-- 学生菜单 -->
+        {% if request.session.userinfo.type == 'student' %}
+            <li class="sidebar-nav-link">
+                <!-- 个人信息链接 -->
+                <a _href="{% url 'student_index' %}" class="{% if request.path == '/home/student/index' %} active {% endif %}">
+                    <i class="am-icon-home sidebar-nav-link-logo"></i> 个人信息
+                </a>
+            </li>
+            <li class="sidebar-nav-link">
+                <a _href="javascript:;" class="sidebar-nav-sub-title">
+                    <i class="am-icon-paper-plane-o sidebar-nav-link-logo"></i> 选题信息
+                    <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                </a>
+                <ul class="sidebar-nav sidebar-nav-sub" style_1="{% if request.path == '/home/student/select_title' or request.path == '/home/student/group' %}
+                display: block; {% endif %}">
+                    <li class="sidebar-nav-link">
+                        <!-- 查看选题链接 -->
+                        <a _href="{% url 'student_select_title' %}" class="{% if request.path == '/home/student/select_title' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 查看选题
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-link">
+                        <!-- 分组选择链接 -->
+                        <a _href="{% url 'student_group' %}" class="{% if request.path == '/home/student/group' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 分组选择
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sidebar-nav-link">
+                <a _href="javascript:;" class="sidebar-nav-sub-title">
+                    <i class="am-icon-pencil-square-o sidebar-nav-link-logo"></i> 毕设信息
+                    <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                </a>
+                <ul class="sidebar-nav sidebar-nav-sub" style_1="{% if request.path == '/home/student/title_msg' or request.path == '/home/student/middle_check' or request.path == '/home/student/graduate_answer' or request.path == '/home/student/graduate_article' %}
+                display: block; {% endif %}">
+                    <li class="sidebar-nav-link">
+                        <!-- 开题信息链接 -->
+                        <a _href="{% url 'student_title_msg' %}" class="{% if request.path == '/home/student/title_msg' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 开题信息
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-link">
+                        <!-- 中期检查链接 -->
+                        <a _href="{% url 'student_middle_check' %}" class="{% if request.path == '/home/student/middle_check' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 中期检查
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-link">
+                        <!-- 毕业答辩链接 -->
+                        <a _href="{% url 'student_graduate_answer' %}" class="{% if request.path == '/home/student/graduate_answer' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 毕业答辩
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-link">
+                        <!-- 毕业论文链接 -->
+                        <a _href="{% url 'student_graduate_article' %}" class="{% if request.path == '/home/student/graduate_article' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 毕业论文
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        <!-- 教师菜单 -->
+        {% elif request.session.userinfo.type == 'teacher' %}
+            <li class="sidebar-nav-link">
+                <!-- 个人信息链接 -->
+                <a _href="{% url 'teacher_index' %}" class="{% if request.path == '/home/teacher/index' %} active {% endif %}">
+                    <i class="am-icon-home sidebar-nav-link-logo"></i> 个人信息
+                </a>
+            </li>
+            <li class="sidebar-nav-link">
+                <a _href="javascript:;" class="sidebar-nav-sub-title">
+                    <i class="am-icon-paper-plane-o sidebar-nav-link-logo"></i> 选题信息
+                    <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                </a>
+                <ul class="sidebar-nav sidebar-nav-sub"
+                    style_1="{% if request.path == '/home/teacher/design_title' or request.path == '/home/teacher/group' %}
+                display: block; {% endif %}">
+                    <li class="sidebar-nav-link">
+                        <!-- 设计开题链接 -->
+                        <a _href="{% url 'teacher_design_title' %}" class="{% if request.path == '/home/teacher/design_title' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 设计开题
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-link">
+                        <!-- 分组选择链接 -->
+                        <a _href="{% url 'teacher_group' %}" class="{% if request.path == '/home/teacher/group' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 分组选择
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sidebar-nav-link">
+                <a _href="javascript:;" class="sidebar-nav-sub-title">
+                    <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 毕业评分
+                    <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                </a>
+                <ul class="sidebar-nav sidebar-nav-sub" style_1="{% if request.path == '/home/teacher/student_score' %}
+                display: block; {% endif %}">
+                    <li class="sidebar-nav-link">
+                        <!-- 学生成绩链接 -->
+                        <a _href="{% url 'teacher_student_score' %}" class="{% if request.path == '/home/teacher/student_score' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 学生成绩
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li class="sidebar-nav-link">
+                <a _href="javascript:;" class="sidebar-nav-sub-title">
+                    <i class="am-icon-pencil-square-o sidebar-nav-link-logo"></i> 小组任务
+                    <span class="am-icon-chevron-down am-fr am-margin-right-sm sidebar-nav-sub-ico"></span>
+                </a>
+                <ul class="sidebar-nav sidebar-nav-sub" style_1="{% if request.path == '/home/teacher/title_msg' or request.path == '/home/teacher/middle_check' or request.path == '/home/teacher/graduate_answer' or request.path == '/home/teacher/graduate_article' %}
+                display: block; {% endif %}">
+                    <li class="sidebar-nav-link">
+                        <!-- 开题答辩链接 -->
+                        <a _href="{% url 'teacher_title_msg' %}" class="{% if request.path == '/home/teacher/title_msg' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 开题答辩
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-link">
+                        <!-- 中期检查链接 -->
+                        <a _href="{% url 'teacher_middle_check' %}" class="{% if request.path == '/home/teacher/middle_check' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 中期检查
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-link">
+                        <!-- 毕业答辩链接 -->
+                        <a _href="{% url 'teacher_graduate_answer' %}" class="{% if request.path == '/home/teacher/graduate_answer' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 毕业答辩
+                        </a>
+                    </li>
+                    <li class="sidebar-nav-link">
+                        <!-- 论文查阅链接 -->
+                        <a _href="{% url 'teacher_graduate_article' %}" class="{% if request.path == '/home/teacher/graduate_article' %} active {% endif %}">
+                            <span class="am-icon-angle-right sidebar-nav-link-logo"></span> 论文查阅
+                        </a>
+                    </li>
+                </ul>
+            </li>
+        <!-- 管理员菜单 -->
+        {% elif request.session.userinfo.type == 'admin' %}
+            <li class="sidebar-nav-link">
+                <!-- 个人信息链接 -->
+                <a _href="{% url 'admin_index' %}" class="{% if request.path == '/home/admin/index' %} active {% endif %}">
+                    <i class="am-icon-home sidebar-nav-link-logo"></i> 个人信息
+                </a>
+            </li>
+            <li class="sidebar-nav-link">
+                <!-- 教师管理链接 -->
+                <a _href="{% url 'admin_teacher' %}" class="{% if request.path == '/home/admin/teacher' %} active {% endif %}">
+                    <i class="am-icon-pencil-square-o sidebar-nav-link-logo"></i> 教师管理
+                </a>
+            </li>
+            <li class="sidebar-nav-link">
+                <!-- 学生管理链接 -->
+                <a _href="{% url 'admin_student' %}" class="{% if request.path == '/home/admin/student' %} active {% endif %}">
+                    <i class="am-icon-paper-plane-o sidebar-nav-link-logo"></i> 学生管理
+                </a>
+            </li>
+            <li class="sidebar-nav-link">
+                <!-- 课题管理链接 -->
+                <a _href="{% url 'admin_title' %}" class="{% if request.path == '/home/admin/title' %} active {% endif %}">
+                    <i class="am-icon-wpforms sidebar-nav-link-logo"></i> 课题管理
+                </a>
+            </li>
+        {% endif %}
+    </ul>
+</div>

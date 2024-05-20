@@ -62,10 +62,10 @@
                <!-- <iframe src="{% url 'student_index' %}" frameborder="0" scrolling="yes" class="a-iframe"></iframe>-->
             {% elif request.session.userinfo.type == 'teacher'  %}
                 <!--<iframe src="{% url 'teacher_index' %}" frameborder="0" scrolling="yes" class="a-iframe"></iframe>-->
-                <iframe src="{% url 'student_index' %}" class="a-iframe iframe-no-border iframe-scrollable"></iframe>
+                <iframe src="{% url 'teacher_index' %}" class="a-iframe iframe-no-border iframe-scrollable"></iframe>
             {% elif request.session.userinfo.type == 'admin'  %}
-                <1--<iframe src="{% url 'admin_index' %}" frameborder="0" scrolling="yes" class="a-iframe"></iframe>-->
-                <iframe src="{% url 'student_index' %}" class="a-iframe iframe-no-border iframe-scrollable"></iframe>
+                <!--<iframe src="{% url 'admin_index' %}" frameborder="0" scrolling="yes" class="a-iframe"></iframe>-->
+                <iframe src="{% url 'admin_index' %}" class="a-iframe iframe-no-border iframe-scrollable"></iframe>
             {% endif %}
         </div>
     </div>

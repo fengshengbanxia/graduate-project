@@ -1,36 +1,49 @@
+<!-- group.html -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>毕业设计管理系统</title>
-    <meta name="description" content="这是一个 index 页面">
-    <meta name="keywords" content="index">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="renderer" content="webkit">
-    <meta http-equiv="Cache-Control" content="no-siteapp" />
-    <meta name="apple-mobile-web-app-title" content="Amaze UI" />
+    <!-- 页面基本元数据定义 -->
+    <meta charset="utf-8"> <!-- 指定文档编码格式为UTF-8 -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- 指定IE浏览器以最新模式渲染页面 -->
+    <title>毕业设计管理系统</title> <!-- 页面标题 -->
+    <meta name="description" content="这是一个 index 页面"> <!-- 页面描述 -->
+    <meta name="keywords" content="index"> <!-- 页面关键字 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1"> <!-- 适应移动设备的视口设置 -->
+    <meta name="renderer" content="webkit"> <!-- 指定页面在webkit内核浏览器中渲染 -->
+    <meta http-equiv="Cache-Control" content="no-siteapp" /> <!-- 防止被应用程序缓存 -->
+    <meta name="apple-mobile-web-app-title" content="Amaze UI"> <!-- 移动设备上的应用标题 -->
+
 
     {% include 'public/script.html' %}
 
     {% include 'public/style.html' %}
+    <!-- 定义页面样式 -->
     <style>
+        /* 设置选择文本的样式 */
         #select-txt{
-            position:absolute;
-            margin-top:6px;
+            position:absolute; /* 绝对定位 */
+            margin-top:6px; /* 上边距为6px */
         }
+        /* 设置索引顶部的样式 */
         .index-top{
-            height:100px!important;
+            height:100px!important; /* 设置高度为100px，并且优先级最高 */
         }
     </style>
 
+
     <script>
-        // 选择分组
+        /**
+         * 确认选择分组的函数
+         * @param {number} id - 学生的ID
+         * @param {string} group_name - 分组的名称
+         * @param {number} count - 当前分组的人数
+         * 该函数无返回值
+         */
         function onConfirmGroup(id,group_name,count){
-            // 如果已经有分组，则不允许再选择
+            // 检查是否已经选择了分组
             let name = $("#group_name").html()
-            name = name ? name.replace(" ","") : 'None'
+            name = name ? name.replace("_","") : 'None'
             if(name != 'None'){
                 layer.msg("已经选择分组！不允许再修改");
                 return;
@@ -39,7 +52,7 @@
                 return;
             }
 
-            // 再次进行确认
+            // 弹窗确认选择分组
             layer.confirm('请确认当前组是否作为您选择的组号?', {icon: 3, title:'提示'}, function(index){
               $.ajax({
                     url:'{% url 'student_doConfirmGroup' %}',
@@ -48,9 +61,9 @@
                     success:function(res){
                         if(res.code== 200){
                             layer.msg("提交成功！");
-                            // 修改显示栏
+                            // 更新界面显示的分组信息
                             $('#group_name').html(res.new_data.group_name)
-                            // 修改表格
+                            // 更新表格中对应学生的分组信息
                               let trList = $("#table-list tr");
                               trList.each((index,item)=>{
                                   if($(item)[0].dataset.id == id){
@@ -82,6 +95,7 @@
             },function(){});
         }
     </script>
+
 </head>
 
 <body data-type="widgets"   class="theme-white">
@@ -101,53 +115,73 @@
 <!--                    </div>-->
                 </div>
 
-                <div class="row">
-                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
-                        <div class="widget am-cf">
-                            <div class="widget-head am-cf">
-                                <div class="widget-title  am-cf">分组列表</div>
-                            </div>
-                            <div class="widget-body  am-fr">
+            <!-- 分组列表页面 -->
+            <div class="row">
+                <!--
+                此div元素使用了Bootstrap的网格系统，用于响应式布局。
+                它在所有屏幕尺寸（small, medium, large）下都占据12列，保证了内容在不同设备上的对齐和展示。
+                类名解释：
+                - am-u-sm-12: 在小屏幕设备（小于768px）上占据12列
+                - am-u-md-12: 在中等屏幕设备（大于等于768px且小于992px）上占据12列
+                - am-u-lg-12: 在大屏幕设备（大于等于992px）上占据12列
+                该代码块没有参数和返回值，因为它是一段HTML标记。
+                -->
+                <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
 
-                                <div class="am-u-sm-12">
-                                    {%csrf_token%}
-                                    <table width="100%" class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r">
-                                        <thead>
-                                            <tr>
-                                                <th>组号</th>
-                                                <th>学生名称</th>
-                                                <th>组内人数</th>
+                    <div class="widget am-cf">
+                        <div class="widget-head am-cf">
+                            <!-- 分组列表标题 -->
+                            <div class="widget-title am-cf">分组列表</div>
+                        </div>
+                        <div class="widget-body  am-fr">
+
+                            <div class="am-u-sm-12">
+                                <!-- CSRF令牌，用于表单提交 -->
+                                {%csrf_token%}
+                                <!-- 数据表格，展示分组信息 -->
+                                <table class="am-table am-table-compact am-table-striped tpl-table-black " id="example-r" style="width:100%;">
+                                    <thead>
+                                        <tr>
+                                            <th>组号</th>
+                                            <th>学生名称</th>
+                                            <th>组内人数</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="table-list">
+                                        <!-- 循环遍历data_list，展示每个分组的详细信息 -->
+                                        {% for item in data_list %}
+                                            <tr class="gradeX" data-id="{{item.id}}">
+                                                <td>{{item.name}}</td>
+                                                <td>{{item.student_name}}</td>
+                                                <td>{{item.count}}</td>
+                                                <td>
+                                                    <!-- 分组操作按钮，点击触发确认选择的函数 -->
+                                                    <div class="tpl-table-black-operation">
+                                                        <a href="javascript:;" class="tpl-table-black-operation-del" onclick="onConfirmGroup('{{item.id}}','{{item.name}}','{{item.count}}')">
+                                                            <i class="am-icon-life-ring"></i> 选择
+                                                        </a>
+                                                    </div>
+                                                </td>
                                             </tr>
-                                        </thead>
-                                        <tbody id="table-list">
-                                            {% for item in data_list %}
-                                                <tr class="gradeX" data-id="{{item.id}}">
-                                                    <td>{{item.name}}</td>
-                                                    <td>{{item.student_name}}</td>
-                                                    <td>{{item.count}}</td>
-                                                    <td>
-                                                        <div class="tpl-table-black-operation">
-                                                            <a href="javascript:;" class="tpl-table-black-operation-del" onclick="onConfirmGroup('{{item.id}}','{{item.name}}','{{item.count}}')">
-                                                                <i class="am-icon-life-ring"></i> 选择
-                                                            </a>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            {% endfor %}
-                                            <!-- more data -->
-                                        </tbody>
-                                    </table>
-                                </div>
+                                        {% endfor %}
+                                        <!-- more data -->
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+    </div>
+    <!-- 引入AmazeUI框架的JavaScript文件 -->
+    <script src="../../static/lib/admin-assets/js/amazeui.min.js"></script>
+    <!-- 引入AmazeUI的DataTables插件 -->
+    <script src="../../static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <!-- 引入DataTables的响应式插件 -->
+    <script src="../../static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <!-- 引入项目基础JavaScript文件 -->
+    <script src="../../static/lib/admin-assets/js/app.js"></script>
 
-    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
-    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
-    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
-    <script src="/static/lib/admin-assets/js/app.js"></script>
 
 </body>
 

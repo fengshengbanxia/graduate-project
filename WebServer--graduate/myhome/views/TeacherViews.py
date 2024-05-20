@@ -294,19 +294,19 @@ def title_msg(request):
     id = request.session["userinfo"].get("id",None)
     name = request.session["userinfo"].get("name",None)
 
-    data= Teacher.objects.filter(id=id,name=name).first()
+    data = Teacher.objects.filter(id=id, name=name).first()
     # # 小组内的学生组信息
-    group_student_arr= Student.objects.filter(group_name=data.group_name)
-    graduate_data= []
-    score_data= []
+    group_student_arr = Student.objects.filter(group_name=data.group_name)
+    graduate_data = []
+    score_data = []
     for item in group_student_arr:
-        t_item = StudentGraduateArticle.objects.filter(teacher_id=id,student_id=item.id).values()
+        t_item = StudentGraduateArticle.objects.filter(teacher_id=id, student_id=item.id).values()
         if t_item:
             graduate_data.append(t_item[0])
             # 继续获取开题信息
-            tt_item = StudentTitleMsg.objects.filter(teacher_id=id,student_id=item.id).values()
+            tt_item = StudentTitleMsg.objects.filter(teacher_id=id, student_id=item.id).values()
             score_data.append(tt_item[0])
-    return render(request,'teacher/title_msg.html',{'data':data,'graduate_data':enumerate(graduate_data),'score_data':enumerate(score_data)})
+    return render(request,'teacher/title_msg.html', {'data':data,'graduate_data':enumerate(graduate_data),'score_data':enumerate(score_data)})
 def doFirstScore(request):
     id = request.session["userinfo"].get("id",None)
     name = request.session["userinfo"].get("name",None)

@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <!-- 设置页面元信息 -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>毕业设计管理系统</title>
@@ -12,103 +13,115 @@
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta name="apple-mobile-web-app-title" content="Amaze UI" />
 
+    <!-- 包含公共的脚本和样式文件 -->
     {% include 'public/script.html' %}
-
     {% include 'public/style.html' %}
 
+    <!-- 自定义样式 -->
     <style>
-        .am-scrollable-horizontal{
+        /* 定义滚动条样式 */
+        .am-scrollable-horizontal {
             display: flex;
             justify-content: center;
             align-items: center;
         }
-        .widget-tail{
+        /* 定义尾部样式 */
+        .widget-tail {
             display: flex;
             flex-direction: column;
-            height:60px;
-            margin-top:10px;
+            height: 60px;
+            margin-top: 10px;
         }
-        .layui-layer.layui-layer-page .layui-form-label{
-            width:100px!important;
+        /* 调整表单元素样式 */
+        .layui-layer.layui-layer-page .layui-form-label {
+            width: 100px !important;
         }
-        .layui-layer.layui-layer-page .layui-input-block{
-            width:400px!important;
+        .layui-layer.layui-layer-page .layui-input-block {
+            width: 400px !important;
         }
-        textarea{
-            resize:none!important;
+        /* 禁止文本区域调整大小 */
+        textarea {
+            resize: none !important;
         }
-        /*隐藏方法*/
-        #layui-layer-shade1,#layui-layer1{
-            display:none;
+        /* 隐藏特定层 */
+        #layui-layer-shade1, #layui-layer1 {
+            display: none;
         }
     </style>
 </head>
 
 <body data-type="widgets" class="theme-white">
 
+    <!-- 页面内容开始 -->
     <div class="row-content am-cf">
 
-                <div class="row   am-cf index-top">
-                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
-                        <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 论文查阅 <small>查看</small></div>
-                        <p class="page-header-description">小组任务教师会参考学生上传的毕业论文，再给出成绩！</p>
-                    </div>
-<!--                    <div class="am-u-lg-3 tpl-index-settings-button">-->
-<!--                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>-->
-<!--                    </div>-->
-                </div>
+        <!-- 页面顶部 -->
+        <div class="row am-cf index-top">
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                <!-- 页面标题和描述 -->
+                <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 论文查阅 <small>查看</small></div>
+                <p class="page-header-description">小组任务教师会参考学生上传的毕业论文，再给出成绩！</p>
+            </div>
+        </div>
 
-                <div class="row" style="height:150px">
-
-                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
-                        <div class="widget am-cf">
-                            <div class="widget-head am-cf">
-                                <div class="widget-title am-fl">学生毕业论文</div>
-                                <div class="widget-function am-fr">
-                                    <a href="javascript:;" class="am-icon-cog"></a>
-                                </div>
-                            </div>
-                            <div class="widget-tail am-cf">
-                                {% for i,item in graduate_data %}
-                                <div class="widget-title am-fl"  id="article_download{{i | add:1}}">
-                                    {{item.student_name}}毕业论文：
-                                    {% if item.article_docx %}
-                                         <a href="{{item.article_docx }}" title="点击下载查看" download> 点击下载毕业论文 </a>
-                                    {% else %}
-                                         <a href="javascript:;" title="请先上传毕业论文" > 暂无 </a>
-                                    {% endif %}
-                                </div>
-                                {% endfor %}
-                            </div>
+        <!-- 学生毕业论文展示区域 -->
+        <div class="row" style="height: 150px">
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
+                <div class="widget am-cf">
+                    <!-- 毕业论文部分标题和设置按钮 -->
+                    <div class="widget-head am-cf">
+                        <div class="widget-title am-fl">学生毕业论文</div>
+                        <div class="widget-function am-fr">
+                            <a href="javascript:;" class="am-icon-cog"></a>
                         </div>
                     </div>
-                </div>
-
-                {%csrf_token%}
-                <input type="hidden" name="student_id" id="student_id" />
-                <input type="hidden" name="student_index" id="student_index" />
-
-
-                {% for i,item in score_data %}
-                <div class="row   am-cf index-top">
-                    <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
-                        <div class="page-header-heading">
-                            <span id="student_name{{i | add:1 }}">{{item.student_name}} </span>
-                            <small id="name{{i | add:1 }}">{{item.name}}</small>
+                    <div class="widget-tail am-cf">
+                        <!-- 使用循环展示每个学生的毕业论文信息 -->
+                        {% for i, item in graduate_data %}
+                        <div class="widget-title am-fl" id="article_download{{i | add:1}}">
+                            <!-- 展示学生毕业论文名称及下载链接 -->
+                            {{item.student_name}}毕业论文：
+                            {% if item.article_docx %}
+                            <a href="{{item.article_docx }}" title="点击下载查看" download> 点击下载毕业论文 </a>
+                            {% else %}
+                            <a href="javascript:;" title="请先上传毕业论文"> 暂无 </a>
+                            {% endif %}
                         </div>
-                        <p class="page-header-description"  id="brief{{i | add:1 }}"> 介绍： {{item.brief}}</p>
-                        <p class="page-header-description"  id="score{{i | add:1 }}"> 成绩： {{item.view_score}}</p>
-                        <p class="page-header-description"  id="remark{{i | add:1 }}"> 评语： {{item.view_remark}}</p>
+                        {% endfor %}
                     </div>
                 </div>
-                {% endfor %}
+            </div>
+        </div>
 
+        <!-- 隐藏的表单域，用于数据提交 -->
+        {% csrf_token %}
+        <input type="hidden" name="student_id" id="student_id" />
+        <input type="hidden" name="student_index" id="student_index" />
+
+        <!-- 展示学生毕业论文评分信息 -->
+        {% for i, item in score_data %}
+        <div class="row am-cf index-top">
+            <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
+                <!-- 学生名称和其他信息 -->
+                <div class="page-header-heading">
+                    <span id="student_name{{i | add:1 }}">{{item.student_name}} </span>
+                    <small id="name{{i | add:1 }}">{{item.name}}</small>
                 </div>
+                <!-- 展示学生毕业论文评分及评语 -->
+                <p class="page-header-description" id="brief{{i | add:1 }}"> 介绍： {{item.brief}}</p>
+                <p class="page-header-description" id="score{{i | add:1 }}"> 成绩： {{item.view_score}}</p>
+                <p class="page-header-description" id="remark{{i | add:1 }}"> 评语： {{item.view_remark}}</p>
+            </div>
+        </div>
+        {% endfor %}
 
-    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
-    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
-    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
-    <script src="/static/lib/admin-assets/js/app.js"></script>
+    </div>
+
+    <!-- 引入页面底部的 JavaScript 脚本 -->
+    <script src="../../static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/app.js"></script>
 
 </body>
 

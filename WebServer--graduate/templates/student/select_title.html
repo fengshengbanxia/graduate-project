@@ -19,7 +19,7 @@
     <style>
         .widget-body.widget-body-lg.am-fr
         .am-scrollable-horizontal {
-            height:250px!;
+            height:250px!important;
             min-height:250px!important;
         }
         .am-scrollable-horizontal{
@@ -48,9 +48,9 @@
           var uploadInst1 = upload.render({
             elem: '#upload1' //绑定元素
             ,accept: 'file' //允许上传的文件类型
-            ,exts: 'docx|doc' //允许上传的文件名后缀
-            ,url: '{% url 'student_doUploadTitle' %}'
-            ,done: function(res){
+            ,exts: 'docx|doc', //允许上传的文件名后缀
+            url: '{% url 'student_doUploadTitle' %}',
+            done: function(res){
                console.log("1上传的结果是",res);
                if(res.code == 200){
                     $("#title_download").html( `已经上传的开题报告： <a href="${res.data}" title="点击下载查看" download> 点击下载开题报告 </a>` )
@@ -314,10 +314,10 @@
 
             </div>
 
-    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
-    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
-    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
-    <script src="/static/lib/admin-assets/js/app.js"></script>
+    <script src="../../static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/app.js"></script>
 
 </body>
 

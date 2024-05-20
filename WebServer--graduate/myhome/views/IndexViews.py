@@ -88,45 +88,61 @@ def register(request):
 
 # 执行注册
 def doRegister(request):
+    """
+    处理用户注册请求。
+
+    参数:
+    - request: HTTP请求对象，包含POST数据。
+
+    返回值:
+    - JsonResponse对象，包含注册结果信息和状态码。
+    """
+    # 提取POST数据并移除CSRF令牌
     data = request.POST.dict()
     data.pop("csrfmiddlewaretoken",None)
+
     # 添加注册时间
     isExist = False
-    data['register_time'] = time.strftime('%Y-%m-%d %H:%M:%S',time.localtime())
-    # 密码加密
+    data['register_time'] = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime())
+
+    # 对密码进行加密处理
     data['password'] = make_password(data['password'], None, 'pbkdf2_sha256')
+
+    # 根据用户类型处理注册逻辑
     if data['type'] == 'student':
+        # 学生类型注册逻辑
         data.pop("type")
         data['cross'] = '0'
-        # 查询是否帐号已经被注册
         obj = Student.objects.filter(number=data['number']).first()
         if not obj:
             Student(**data).save()
         else:
             isExist = True
     elif data['type'] == 'teacher':
+        # 教师类型注册逻辑
         data.pop("type")
-        # 查询是否帐号已经被注册
         obj = Teacher.objects.filter(number=data['number']).first()
         if not obj:
             Teacher(**data).save()
         else:
             isExist = True
     elif data['type'] == 'admin':
+        # 管理员类型注册逻辑
         data.pop("type")
-        # 查询是否帐号已经被注册
         obj = Admin.objects.filter(number=data['number']).first()
         if not obj:
             Admin(**data).save()
         else:
             isExist = True
     else:
-        return JsonResponse ({'msg': '注册失败！身份类型参数没有传递', 'code': 403})
-    if not isExist:
-        return JsonResponse ({'msg': '注册成功！', 'code': 200})
-    else:
-        return JsonResponse ({'msg': '当前ID已经被注册，请重新输入！', 'code': 403})
+        # 返回错误响应：身份类型参数未传递
+        return JsonResponse({'msg': '注册失败！身份类型参数没有传递', 'code': 403})
 
+    # 根据注册结果返回相应信息
+    if not isExist:
+        return JsonResponse({'msg': '注册成功！', 'code': 200})
+    else:
+        return JsonResponse({'msg': '当前ID已经被注册，请重新输入！', 'code': 403})
 
 # 执行退出登录
 def doLogout(request):
@@ -137,10 +153,10 @@ def doLogout(request):
 
 # 后台主页
 def index(request):
-    return render(request,'index.html')
+    return render(request, 'index.html')
 
 
 # 404页
 def empty(request):
-    return render(request,'404error.html')
+    return render(request, '404error.html')
 

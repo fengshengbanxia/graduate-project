@@ -2,7 +2,7 @@
 <header>
     <!-- logo -->
     <div class="am-fl tpl-header-logo">
-        <a href="javascript:;"><img src="/static/lib/admin-assets/img/logo.png" alt=""></a>
+        <a href="javascript:;"><img src="../../static/lib/admin-assets/img/logo.png" alt=""></a>
     </div>
     <!-- 右侧内容 -->
     <div class="tpl-header-fluid">
@@ -17,7 +17,7 @@
             <ul>
                 <!-- 欢迎语 -->
                 <li class="am-text-sm tpl-header-navbar-welcome">
-                    <a href="javascript:;">欢迎你, <span>
+                    <a href="javascript:">欢迎你, <span>
                         {% if request.session.userinfo.type == 'admin' %}
                         管理员
                         {% elif request.session.userinfo.type == 'teacher' %}

@@ -53,14 +53,13 @@
             return false;
           },
           content: `
-            <form class="layui-form" action="">
+            <form class="layui-form" action=" ">
               <div class="layui-form-item">
                 <label class="layui-form-label">类型</label>
                 <div class="layui-input-block">
                   <input type="text" name="submit_score" value="{{data.group_type}}"  lay-filter="submit_score1" required  lay-verify="required" max-length="15" disabled autocomplete="off" class="layui-input">
                 </div>
               </div>
-
 
             {% if data.group_type == '组长' %}
                   <div class="layui-form-item">
@@ -265,7 +264,7 @@
                         <p class="page-header-description"  id="remark{{i | add:1 }}"> 评语： {{item.third_remark}}</p>
                         <p class="page-header-description"  id="rank{{i | add:1 }}"> 等级： {{item.graduate_rank}}</p>
                     </div>
-                    <div class="am-u-lg-3 tpl-index-settings-button" onclick="setSelectTitle({{i | add:1 }},{{item.student_id}})">
+                    <div class="am-u-lg-3 tpl-index-settings-button" onclick="setSelectTitle({{ i|add:1 }},{{item.student_id}})">
                         <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 评分</button>
                     </div>
                 </div>
@@ -273,10 +272,10 @@
 
                 </div>
 
-    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
-    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
-    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
-    <script src="/static/lib/admin-assets/js/app.js"></script>
+    <script src="../../static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/app.js"></script>
 
 </body>
 

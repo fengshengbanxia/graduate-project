@@ -2,6 +2,7 @@
 <html lang="en">
 
 <head>
+    <!-- 页面基础元数据 -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>毕业设计管理系统</title>
@@ -12,10 +13,11 @@
     <meta http-equiv="Cache-Control" content="no-siteapp" />
     <meta name="apple-mobile-web-app-title" content="Amaze UI" />
 
+    <!-- 公共的脚本和样式文件 -->
     {% include 'public/script.html' %}
-
     {% include 'public/style.html' %}
 
+    <!-- 页面自定义样式 -->
     <style>
         .teacher-tab .widget,
         .teacher-tab .widget-statistic-header,
@@ -34,25 +36,30 @@
     </style>
 </head>
 
-<body data-type="index"  class="theme-white">
+<body data-type="index" class="theme-white">
 
+    <!-- 页面主体 -->
     <div class="row-content am-cf">
 
-        <div class="row   am-cf index-top">
+        <!-- 页面头部 -->
+        <div class="row am-cf index-top">
             <div class="am-u-sm-12 am-u-md-12 am-u-lg-9">
                 <div class="page-header-heading"><span class="am-icon-home page-header-heading-icon"></span> 首页 <small></small></div>
                 <p class="page-header-description">我是学生</p>
             </div>
+            <!-- 设置按钮，当前隐藏 -->
 <!--                    <div class="am-u-lg-3 tpl-index-settings-button">-->
 <!--                        <button type="button" class="page-header-button"><span class="am-icon-paint-brush"></span> 设置</button>-->
 <!--                    </div>-->
         </div>
 
+        <!-- 数据展示区域 -->
         <div class="row  am-cf">
+            <!-- 学生总数 -->
             <div class="am-u-sm-12 am-u-md-6 am-u-lg-4 teacher-tab">
                 <div class="widget widget-primary am-cf">
                     <div class="widget-statistic-header">
-                        本校教师总数
+                        本校学生总数
                     </div>
                     <div class="widget-statistic-body">
                         <div class="widget-statistic-value">
@@ -65,10 +72,11 @@
                     </div>
                 </div>
             </div>
+            <!-- 教师总数 -->
             <div class="am-u-sm-12 am-u-md-6 am-u-lg-4">
                 <div class="widget widget-primary am-cf">
                     <div class="widget-statistic-header">
-                        本校学生总数
+                        本校教师总数
                     </div>
                     <div class="widget-statistic-body">
                         <div class="widget-statistic-value">
@@ -81,6 +89,7 @@
                     </div>
                 </div>
             </div>
+            <!-- 课题总数 -->
             <div class="am-u-sm-12 am-u-md-6 am-u-lg-4">
                 <div class="widget widget-purple am-cf">
                     <div class="widget-statistic-header">
@@ -99,7 +108,9 @@
             </div>
         </div>
 
+        <!-- 用户信息及操作区域 -->
         <div class="row am-cf">
+            <!-- 用户信息展示 -->
             <div class="am-u-sm-12 am-u-md-12 am-u-lg-4 widget-margin-bottom-lg ">
                 <div class="tpl-user-card am-text-center widget-body-lg">
                     <div class="tpl-user-card-title">
@@ -108,10 +119,11 @@
                     <div class="achievement-subheading">
                         当前学生ID：{{request.session.userinfo.number}}
                     </div>
-                    <img class="achievement-image" src="/static/lib/admin-assets/img/user03.png" alt="">
+                    <img class="achievement-image" src="../../static/lib/admin-assets/img/user03.png" alt="">
                 </div>
             </div>
 
+            <!-- 数据表格区域 -->
             <div class="am-u-sm-12 am-u-md-12 am-u-lg-8 widget-margin-bottom-lg">
 
                 <div class="widget am-cf widget-body-lg">
@@ -129,6 +141,7 @@
                                 </thead>
                                 <tbody>
 
+                                    <!-- 数据循环 -->
                                     {% for item in data_list %}
                                     <tr class="gradeX">
                                         <td>{{item.type}}</td>
@@ -150,10 +163,11 @@
         </div>
     </div>
 
-    <script src="/static/lib/admin-assets/js/amazeui.min.js"></script>
-    <script src="/static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
-    <script src="/static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
-    <script src="/static/lib/admin-assets/js/app.js"></script>
+    <!-- 页面脚本 -->
+    <script src="../../static/lib/admin-assets/js/amazeui.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/amazeui.datatables.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/dataTables.responsive.min.js"></script>
+    <script src="../../static/lib/admin-assets/js/app.js"></script>
 
 </body>
 
